@@ -5,6 +5,10 @@ eleventyNavigation:
   order: 1
 numberOfLatestPostsToShow: 3
 ---
+<div class="message-box">
+	<p>👋 Hi, I'm Suraj Jadhav from Mumbai, India. With 7+ years of experience in web development, I'm passionate about PHP and JavaScript, specializing in Laravel and Vue.js.</p>
+</div>
+
 {% set postsCount = collections.posts | length %}
 {% set latestPostsCount = postsCount | min(numberOfLatestPostsToShow) %}
 <h2>Latest {{ latestPostsCount }} Post{% if latestPostsCount != 1 %}s{% endif %}</h2>

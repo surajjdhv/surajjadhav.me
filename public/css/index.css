@@ -54,6 +54,9 @@ html {
 }
 body {
 	max-width: 40em;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 /* https://www.a11yproject.com/posts/how-to-hide-content/ */
@@ -145,15 +148,17 @@ code {
 /* Header */
 header {
 	display: flex;
-	gap: 1em .5em;
+	/* gap: 1em .5em; */
 	flex-wrap: wrap;
 	align-items: center;
 	padding: 1em;
+    justify-content: space-between;
 }
 .home-link {
 	font-size: 1em; /* 16px /16 */
 	font-weight: 700;
 	margin-right: 2em;
+    text-decoration: none;
 }
 .home-link:link:not(:hover) {
 	text-decoration: none;
@@ -267,4 +272,20 @@ a[href].header-anchor:focus,
 
 h2 + .header-anchor {
 	font-size: 1.5em;
+}
+
+footer {
+    margin-top: auto;
+    border-top: 1px dashed var(--color-gray-20);
+    padding: 1em;
+    font-size: 0.9em;
+    text-align: center;
+}
+
+footer p {
+    margin: 0px;
+}
+
+footer a {
+    text-decoration: none;
 }

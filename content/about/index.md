@@ -22,6 +22,5 @@ eleventyNavigation:
 
 ## Contact
 
-📧 Feel free to email me at [dev@surajjadhav.anonaddy.me](mailto:dev@surajjadhav.anonaddy.me) to discuss opportunities.
-
+📧 Feel free to [contact me](mailto:dev@surajjadhav.anonaddy.me) to discuss opportunities.
 Let's connect and create something awesome together!
