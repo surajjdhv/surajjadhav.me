@@ -289,3 +289,7 @@ footer p {
 footer a {
     text-decoration: none;
 }
+
+footer small {
+	color: #38526c;
+}

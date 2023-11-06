@@ -8,6 +8,9 @@ layout: layouts/base.njk
 
 <ul class="post-metadata">
 	<li><time datetime="{{ page.date | htmlDateString }}">{{ page.date | readableDate }}</time></li>
+	{% set wc = content | striptags | wordcount %}
+	{% set wPerMinute = (wc / 240) + 1 %}
+	<li>{{ wPerMinute | round }} min read.</li>
 	{%- for tag in tags | filterTagList %}
 	{%- set tagUrl %}/tags/{{ tag | slugify }}/{% endset %}
 	<li><a href="{{ tagUrl }}" class="post-tag">{{ tag }}</a>{%- if not loop.last %}, {% endif %}</li>
