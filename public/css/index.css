@@ -110,7 +110,7 @@ header:after {
 
 .links-nextprev {
 	list-style: none;
-	border-top: 1px dashed var(--color-gray-20);
+	/* border-top: 1px dashed var(--color-gray-20); */
 	padding: 1em 0;
 }
 

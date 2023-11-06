@@ -19,6 +19,17 @@ module.exports = function(eleventyConfig) {
 		"CNAME": "CNAME"
 	});
 
+    // From blog copy exact folder structure except markdown files
+    eleventyConfig.addPassthroughCopy({
+        "./content/blog": "/blog",
+	}, {
+        filter: path => {
+            return !path.split('.').pop().includes([
+                "md"
+            ]);
+        }
+    });
+
 	// Run Eleventy when these files change:
 	// https://www.11ty.dev/docs/watch-serve/#add-your-own-watch-targets
 
