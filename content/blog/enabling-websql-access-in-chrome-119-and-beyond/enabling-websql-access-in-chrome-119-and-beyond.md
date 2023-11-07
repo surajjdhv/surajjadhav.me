@@ -34,7 +34,7 @@ To enable the WebSQL policy on a Windows computer, you can follow these steps:
 5. **Set the Value to 1**:
    - Double-click on "WebSQLAccess," set the value to 1, and click "OK."
 
-Alternatively, you can run download [this file](./EnableWebSQLAcessChromePolicy.reg) and run it as administrator to update registry.
+Alternatively, you can download [this file](./EnableWebSQLAcessChromePolicy.reg) and run it as administrator to update registry.
 
 ## Enabling WebSQL Access on macOS
 
