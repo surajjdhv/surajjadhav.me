@@ -278,7 +278,7 @@ footer {
     margin-top: auto;
     border-top: 1px dashed var(--color-gray-20);
     padding: 1em;
-    font-size: 0.9em;
+    font-size: 1em;
     text-align: center;
 }
 
@@ -286,6 +286,6 @@ footer p {
     margin: 0px;
 }
 
-footer a {
-    text-decoration: none;
+footer small {
+	color: var(--text-color);
 }
