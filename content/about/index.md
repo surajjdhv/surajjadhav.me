@@ -19,7 +19,7 @@ eleventyNavigation:
 
 ## Hobbies
 
-📚 I love reading and 🛠️ tinkering with hardware devices.
+📚 I love reading and 🛠️ tinkering with hardware devices especially Raspberry Pi's.
 
 ## Contact
 
