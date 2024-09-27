@@ -1,5 +1,6 @@
 const { DateTime } = require("luxon");
 const markdownItAnchor = require("markdown-it-anchor");
+const { execSync } = require("child_process");
 
 const pluginRss = require("@11ty/eleventy-plugin-rss");
 const pluginSyntaxHighlight = require("@11ty/eleventy-plugin-syntaxhighlight");
@@ -18,9 +19,9 @@ module.exports = function(eleventyConfig) {
 		"./node_modules/prismjs/themes/prism-okaidia.css": "/css/prism-okaidia.css",
 	});
 
-    // From blog copy exact folder structure except markdown files
+	// From blog copy exact folder structure except markdown files
     eleventyConfig.addPassthroughCopy({
-        "./content/blog": "/blog",
+			"./content/blog": "/blog",
 	}, {
         filter: path => {
             return !path.split('.').pop().includes([
@@ -90,6 +91,22 @@ module.exports = function(eleventyConfig) {
 	});
 
 	eleventyConfig.addShortcode("timestamp", () => `${Date.now()}`);
+
+	eleventyConfig.addShortcode("commitId", function () {
+		try {
+			const commitId = execSync("git rev-parse HEAD").toString().trim();
+
+			const shortCommitId = commitId.substring(0, 7);
+
+			const repoUrl = "https://github.com/surajjdhv/surajjadhav.me";
+
+			const commitUrl = `${repoUrl}/commit/${commitId}`;
+
+			return `<a href="${commitUrl}" target="_blank">${shortCommitId}</a>`;
+		} catch (error) {
+			return "";
+		}
+	});
 
 	// Customize Markdown library settings:
 	eleventyConfig.amendLibrary("md", mdLib => {
