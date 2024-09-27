@@ -18,7 +18,7 @@ else
     
     if [ $? -eq 0 ]; then
         echo "Successfully pulled changes. Running Eleventy build..."
-        npx @11ty/eleventy
+        ./node_modules/.bin/eleventy
         
         if [ $? -eq 0 ]; then
             echo "Eleventy site build completed successfully."
