@@ -4,9 +4,10 @@ eleventyNavigation:
   key: About
   order: 3
 ---
+
 # About
 
-👋 Hi, I'm Suraj Jadhav from Mumbai, India. With 7+ years of experience in web development, I'm passionate about PHP and JavaScript, specializing in Laravel and Vue.js.
+👋 Hi, I'm Suraj Jadhav from Mumbai, India. With 8+ years of experience in web development, I'm passionate about PHP and JavaScript, specializing in Laravel and Vue.js.
 
 ## Expertise
 
