@@ -16,7 +16,6 @@ module.exports = function(eleventyConfig) {
 	eleventyConfig.addPassthroughCopy({
 		"./public/": "/",
 		"./node_modules/prismjs/themes/prism-okaidia.css": "/css/prism-okaidia.css",
-		"CNAME": "CNAME"
 	});
 
     // From blog copy exact folder structure except markdown files
