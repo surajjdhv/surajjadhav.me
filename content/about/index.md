@@ -24,4 +24,4 @@ eleventyNavigation:
 ## Contact
 
 📧 Feel free to [contact me](mailto:dev@surajjadhav.anonaddy.me) to discuss opportunities.
-Let's connect and create something awesome together!
+Let's connect and build something awesome together!
