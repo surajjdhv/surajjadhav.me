@@ -15,7 +15,7 @@ eleventyNavigation:
 - 🌐 **JavaScript**: Building dynamic web applications.
 - 🚀 **Laravel**: My go-to PHP framework.
 - 📱 **Vue.js**: Build interactive web-interfaces.
-- ☁️ **AWS**: Preparing for AWS Certified Associate Developer Certification.
+- ☁️ **AWS**: AWS Certified Associate Developer Certification.
 
 ## Hobbies
 
