@@ -1,0 +1,22 @@
+---
+import type { HTMLAttributes } from "astro/types";
+type Props = { noMarginTop?: boolean } & HTMLAttributes<"footer">;
+const { noMarginTop, class: className, ...attrs } = Astro.props;
+---
+
+<footer class:list={["app-layout site-footer", className]} {...attrs}>
+  <div>
+    <span>© {new Date().getFullYear()} Suraj Jadhav</span><span
+      class="footer-note"
+      >Made with <a href="https://astro.build/">Astro</a> & <a
+        href="https://github.com/satnaing/astro-paper">AstroPaper</a
+      ></span
+    >
+  </div>
+  <nav aria-label="Footer">
+    <a href="/resume/">Resume</a>
+    <a href="/rss.xml">RSS ↗</a><a href="https://github.com/surajjdhv"
+      >GitHub ↗</a
+    >
+  </nav>
+</footer>

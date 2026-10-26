@@ -1,0 +1,171 @@
+---
+import { githubUsername } from "@/data/integrations";
+---
+
+<section class="github-section" aria-labelledby="github-title">
+  <div class="section-heading">
+    <h2 id="github-title">A little, often.</h2><a
+      class="small-link"
+      href={`https://github.com/${githubUsername}`}>@{githubUsername} ↗</a>
+  </div>
+  <p class="github-intro muted small-text">
+    The small steps behind the scenes, over the last year.
+  </p>
+  <github-chart data-username={githubUsername}>
+    <div
+      class="chart-scroll"
+      tabindex="0"
+      role="region"
+      aria-label="GitHub contributions over the last year, scroll horizontally to explore"
+    >
+      <div class="chart-months" aria-hidden="true"></div><div
+        class="contribution-grid"
+        aria-hidden="true"
+      >
+      </div>
+    </div>
+    <div class="chart-caption">
+      <p role="status" data-chart-summary>Loading GitHub activity…</p><div
+        class="chart-legend"
+        aria-label="Contribution intensity from less to more"
+      >
+        <span>Less</span>{
+          [0, 1, 2, 3, 4].map(level => (
+            <span
+              class="contribution-day"
+              data-level={level}
+              aria-hidden="true"
+            />
+          ))
+        }<span>More</span>
+      </div>
+    </div>
+    <p data-chart-error hidden class="small-text muted">
+      Activity is taking a break. <a
+        class="text-link"
+        href={`https://github.com/${githubUsername}`}
+        >View contributions on GitHub ↗</a>
+    </p>
+    <noscript
+      ><a class="text-link" href={`https://github.com/${githubUsername}`}
+        >View my contribution chart on GitHub ↗</a
+      ></noscript
+    >
+  </github-chart>
+</section>
+<script>
+  type Contribution = { date: string; count: number; level: number };
+  class GitHubChart extends HTMLElement {
+    private controller?: AbortController;
+    private observer?: IntersectionObserver;
+    connectedCallback() {
+      this.observer = new IntersectionObserver(
+        entries => {
+          if (entries.some(entry => entry.isIntersecting)) {
+            this.observer?.disconnect();
+            void this.load();
+          }
+        },
+        { rootMargin: "400px" }
+      );
+      this.observer.observe(this);
+    }
+    private async load() {
+      this.controller = new AbortController();
+      const timeout = setTimeout(() => this.controller?.abort(), 10000);
+      try {
+        const response = await fetch(
+          `https://github-contributions-api.jogruber.de/v4/${encodeURIComponent(this.dataset.username!)}?y=last`,
+          { signal: this.controller.signal, credentials: "omit" }
+        );
+        if (!response.ok) throw new Error("GitHub activity unavailable");
+        const data = await response.json();
+        if (!Array.isArray(data.contributions) || !data.contributions.length)
+          throw new Error("No contribution data");
+        const days: Contribution[] = data.contributions;
+        if (
+          !days.every(
+            day =>
+              /^\d{4}-\d{2}-\d{2}$/.test(day.date) &&
+              Number.isInteger(day.count) &&
+              day.count >= 0 &&
+              Number.isInteger(day.level) &&
+              day.level >= 0 &&
+              day.level <= 4
+          )
+        )
+          throw new Error("Invalid contribution data");
+        days.sort((a, b) => a.date.localeCompare(b.date));
+        const grid = this.querySelector<HTMLElement>(".contribution-grid")!;
+        const months = this.querySelector<HTMLElement>(".chart-months")!;
+        grid.replaceChildren();
+        months.replaceChildren();
+        const offset = new Date(`${days[0].date}T00:00:00Z`).getUTCDay();
+        const columns = Math.ceil((offset + days.length) / 7);
+        this.style.setProperty("--chart-columns", String(columns));
+        for (let i = 0; i < offset; i++) {
+          const spacer = document.createElement("span");
+          spacer.className = "chart-spacer";
+          grid.append(spacer);
+        }
+        let lastMonth = "";
+        let lastLabelColumn = -4;
+        days.forEach((day, index) => {
+          const date = new Date(`${day.date}T00:00:00Z`);
+          const label = date.toLocaleDateString("en-GB", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+            timeZone: "UTC",
+          });
+          const cell = document.createElement("span");
+          cell.className = "contribution-day";
+          cell.dataset.level = String(day.level);
+          cell.title = `${day.count} ${day.count === 1 ? "contribution" : "contributions"} on ${label}`;
+          grid.append(cell);
+          const month = date.toLocaleDateString("en", {
+            month: "short",
+            timeZone: "UTC",
+          });
+          const column = Math.floor((index + offset) / 7) + 1;
+          if (
+            month !== lastMonth &&
+            column - lastLabelColumn >= 4 &&
+            column < columns - 1
+          ) {
+            const text = document.createElement("span");
+            text.textContent = month;
+            text.style.gridColumn = `${column} / span 3`;
+            months.append(text);
+            lastLabelColumn = column;
+          }
+          lastMonth = month;
+        });
+        const total = days.reduce((sum, day) => sum + day.count, 0);
+        this.querySelector("[data-chart-summary]")!.textContent =
+          `${total.toLocaleString()} contributions in the last year`;
+        grid.setAttribute("role", "img");
+        grid.setAttribute(
+          "aria-label",
+          `${total.toLocaleString()} GitHub contributions from ${days[0].date} to ${days.at(-1)!.date}. Daily counts are available on the linked GitHub profile.`
+        );
+        grid.removeAttribute("aria-hidden");
+        this.querySelector(".chart-scroll")!.scrollLeft = 10000;
+      } catch {
+        if (!this.isConnected) return;
+        this.querySelector("[data-chart-summary]")!.textContent =
+          "GitHub activity unavailable";
+        this.querySelector("[data-chart-error]")?.removeAttribute("hidden");
+        this.querySelector(".chart-scroll")?.setAttribute("hidden", "");
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+    disconnectedCallback() {
+      this.observer?.disconnect();
+      this.controller?.abort();
+    }
+  }
+  if (!customElements.get("github-chart"))
+    customElements.define("github-chart", GitHubChart);
+</script>

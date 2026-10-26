@@ -1,0 +1,162 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { resume } from "@/data/resume";
+---
+
+<Layout
+  title="Resume | Suraj Jadhav"
+  description="A short professional overview: backend engineering, system design, cloud-native systems, and practical AI integrations."
+>
+  <Header />
+  <main id="main-content" class="app-layout inner-page resume-page">
+    <a href="/about/" class="back-link">← About me</a>
+    <header class="page-intro resume-intro">
+      <span class="eyebrow">RESUME / THE SHORT VERSION</span>
+      <h1>{resume.title}</h1>
+      <p>{resume.summary}</p>
+      <span class="resume-experience">{resume.experience}</span>
+    </header>
+
+    <section class="resume-section" aria-labelledby="experience-title">
+      <div class="section-heading">
+        <h2 id="experience-title">Experience highlights</h2>
+      </div>
+      <ul class="resume-highlights">
+        {
+          resume.highlights.map((highlight, index) => (
+            <li>
+              <span class="resume-number" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div>
+                <>
+                  <h3>{highlight.title}</h3>
+                  <p>{highlight.description}</p>
+                </>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </section>
+
+    <section class="resume-section" aria-labelledby="skills-title">
+      <div class="section-heading">
+        <h2 id="skills-title">Tools I work with</h2>
+      </div>
+      <dl class="resume-skills">
+        {
+          resume.skills.map(skill => (
+            <div>
+              <>
+                <dt>{skill.label}</dt>
+                <dd>{skill.tools.join(" · ")}</dd>
+              </>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
+
+    <a href="/posts/" class="text-link resume-writing-link"
+      >What I’m learning and writing about →</a
+    >
+  </main>
+  <Footer />
+</Layout>
+
+<style>
+  .resume-page {
+    max-width: 760px;
+  }
+  .resume-intro {
+    padding-bottom: 34px;
+  }
+  .resume-intro h1 {
+    max-width: 620px;
+    text-wrap: balance;
+  }
+  .resume-intro > p {
+    max-width: 36rem;
+    font-size: 18px;
+    line-height: 1.8;
+  }
+  .resume-experience {
+    display: inline-block;
+    margin-top: 20px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+  }
+  .resume-section {
+    border-top: 1px solid var(--border);
+    padding-top: 28px;
+    margin-bottom: 32px;
+  }
+  .resume-section .section-heading {
+    margin-bottom: 20px;
+  }
+  .resume-highlights {
+    display: grid;
+    gap: 22px;
+  }
+  .resume-highlights li {
+    display: flex;
+    gap: 18px;
+  }
+  .resume-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent);
+    line-height: 28px;
+  }
+  .resume-highlights h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 5px;
+    letter-spacing: -0.02em;
+  }
+  .resume-highlights p {
+    font-size: 16px;
+    color: var(--muted-foreground);
+    line-height: 1.8;
+  }
+  .resume-skills {
+    display: grid;
+    gap: 17px;
+  }
+  .resume-skills > div {
+    display: grid;
+    grid-template-columns: 115px 1fr;
+    gap: 18px;
+  }
+  .resume-skills dt {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .resume-skills dd {
+    font-size: 15px;
+    color: var(--muted-foreground);
+    line-height: 1.8;
+  }
+  .resume-writing-link {
+    font-size: 15px;
+  }
+  @media (max-width: 640px) {
+    .resume-intro > p {
+      font-size: 17px;
+    }
+    .resume-skills > div {
+      grid-template-columns: 1fr;
+      gap: 3px;
+    }
+    .resume-highlights li {
+      gap: 12px;
+    }
+    .resume-experience {
+      font-size: 11px;
+    }
+  }
+</style>

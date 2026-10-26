@@ -1,0 +1,87 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Card from "@/components/Card.astro";
+import SeriesCard from "@/components/SeriesCard.astro";
+import GitHubChart from "@/components/GitHubChart.astro";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { categories, series } from "@/data/series";
+const posts = await getCollection("posts");
+const published = getSortedPosts(posts);
+---
+
+<Layout title="Suraj Jadhav — Learning in public">
+  <Header />
+  <main id="main-content" class="app-layout home">
+    <section class="hero" aria-labelledby="intro-title">
+      <div class="eyebrow intro-eyebrow">
+        <span class="small-dot" aria-hidden="true"></span> A PERSONAL CORNER OF THE
+        INTERNET
+      </div>
+      <h1 id="intro-title">
+        Learning things.<br /><span>Sharing the journey.</span>
+      </h1>
+      <p class="hero-intro">
+        Hey, I’m Suraj <span class="wave" aria-hidden="true">↗</span>
+      </p>
+      <p class="hero-description">
+        A curious mind, figuring things out as I go. This is where I share my
+        thoughts, what I’m building, and the things I learn along the way.
+      </p>
+      <div class="hero-links">
+        <a href="/about/">A little about me <span aria-hidden="true">→</span></a
+        ><span aria-hidden="true">/</span><a href="https://github.com/surajjdhv"
+          >Find me on GitHub <span aria-hidden="true">↗</span></a>
+      </div>
+    </section>
+    <section class="home-series" aria-labelledby="series-title">
+      <div class="section-heading">
+        <h2 id="series-title">Learning in public</h2><span
+          class="section-index"
+          aria-hidden="true">01 /</span>
+      </div><SeriesCard item={series[0]} {posts} />
+    </section>
+    <section class="home-writing" aria-labelledby="writing-title">
+      <div class="section-heading">
+        <h2 id="writing-title">Recent writing</h2><a
+          class="small-link"
+          href="/posts/">All posts <span aria-hidden="true">→</span></a>
+      </div><ul>
+        {published.slice(0, 4).map(post => <Card variant="h3" {...post} />)}
+      </ul>
+    </section>
+    <section class="topics-section" aria-labelledby="topics-title">
+      <div class="section-heading">
+        <h2 id="topics-title">Follow your curiosity</h2><a
+          class="small-link"
+          href="/tags/">All tags →</a>
+      </div><div class="topic-links">
+        {
+          categories.map(category => (
+            <a href={`/categories/${category.slug}/`}>
+              {category.name}
+              <span>
+                {
+                  published.filter(post => post.data.category === category.name)
+                    .length
+                }
+              </span>
+              <span aria-hidden="true">↗</span>
+            </a>
+          ))
+        }
+      </div>
+    </section>
+    <GitHubChart />
+    <aside class="rss-note">
+      <span aria-hidden="true">↳</span><p>
+        Good things take time. Follow along at your own pace.<br /><a
+          href="/rss.xml"
+          >Subscribe via RSS <span aria-hidden="true">↗</span></a>
+      </p>
+    </aside>
+  </main>
+  <Footer />
+</Layout>

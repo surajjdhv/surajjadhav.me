@@ -1,0 +1,45 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Card from "@/components/Card.astro";
+import { categories } from "@/data/series";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+export function getStaticPaths() {
+  return categories.map(category => ({
+    params: { category: category.slug },
+    props: { category },
+  }));
+}
+const { category } = Astro.props;
+const posts = getSortedPosts(await getCollection("posts")).filter(
+  post => post.data.category === category.name
+);
+---
+
+<Layout
+  title={`${category.name} | Suraj Jadhav`}
+  description={category.description}
+  ><Header /><main id="main-content" class="app-layout inner-page">
+    <a href="/categories/" class="back-link">← All categories</a><div
+      class="page-intro"
+    >
+      <span class="eyebrow"
+        >{posts.length} {posts.length === 1 ? "POST" : "POSTS"}</span
+      ><h1>{category.name}</h1><p>{category.description}</p>
+    </div>{
+      posts.length ? (
+        <ul>
+          {posts.map(post => (
+            <Card {...post} />
+          ))}
+        </ul>
+      ) : (
+        <p class="empty-state">
+          Nothing here just yet. New notes are on their way.
+        </p>
+      )
+    }
+  </main><Footer /></Layout
+>

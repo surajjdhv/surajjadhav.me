@@ -1,0 +1,109 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Card from "@/components/Card.astro";
+import { series } from "@/data/series";
+import { getSeriesPosts } from "@/utils/series";
+import { getPostUrl } from "@/utils/getPostPaths";
+export function getStaticPaths() {
+  return series.map(item => ({ params: { slug: item.slug }, props: { item } }));
+}
+const { item } = Astro.props;
+const posts = getSeriesPosts(await getCollection("posts"), item.slug);
+const count = posts.length;
+const days = Array.from({ length: item.target }, (_, index) => ({
+  day: index + 1,
+  post: posts.find(post => post.data.seriesDay === index + 1),
+}));
+---
+
+<Layout title={`${item.title} | Suraj Jadhav`} description={item.description}
+  ><Header /><main id="main-content" class="app-layout inner-page">
+    <a href="/series/" class="back-link">← All series</a><div
+      class="page-intro"
+    >
+      <span class="eyebrow">{item.hashtag}</span><h1>{item.title}</h1><p>
+        {item.description}
+      </p>
+    </div><section class="journey-panel" aria-labelledby="journey-title">
+      <div class="section-heading">
+        <h2 id="journey-title">A little progress, every day.</h2><span
+          class="status-label"
+          >{
+            count === item.target
+              ? "Complete"
+              : count
+                ? "In progress"
+                : "Starting soon"
+          }</span
+        >
+      </div><div class="progress-caption">
+        <strong>{count} <span>/ {item.target} days</span></strong><span
+          >{Math.round((count / item.target) * 100)}% complete</span
+        >
+      </div><progress
+        class="journey-progress"
+        value={count}
+        max={item.target}
+        aria-label="Published learning days">{count} / {item.target}</progress
+      ><div class="day-grid" aria-label="Learning days">
+        {
+          days.map(({ day, post }) =>
+            post ? (
+              <a
+                class="completed-day"
+                href={getPostUrl(post.id, post.filePath)}
+                aria-label={`Day ${day}: ${post.data.title}`}
+              >
+                {String(day).padStart(2, "0")}
+              </a>
+            ) : (
+              <span
+                title={`Day ${day} — not published yet`}
+                aria-label={`Day ${day}, not published yet`}
+              >
+                {String(day).padStart(2, "0")}
+              </span>
+            )
+          )
+        }
+      </div><p class="muted small-text">
+        Filled days are published entries. Each one is a small step forward.
+      </p>
+    </section><section class="series-entries" aria-labelledby="entries-title">
+      <div class="section-heading">
+        <h2 id="entries-title">The learning notes</h2><span
+          class="small-text muted">In day order</span
+        >
+      </div>{
+        count ? (
+          <ul>
+            {posts.map(post => (
+              <Card {...post} />
+            ))}
+          </ul>
+        ) : (
+          <div class="empty-state">
+            <>
+              <span class="empty-symbol" aria-hidden="true">
+                ↳
+              </span>
+              <h3>Every journey starts with a question.</h3>
+              <p>
+                The first learning note is still to come. Follow the feed and
+                you’ll find it here when it’s ready.
+              </p>
+              <a href="/rss.xml" class="text-link">
+                Follow via RSS ↗
+              </a>
+            </>
+          </div>
+        )
+      }
+    </section><a class="text-link" href={item.introPost}
+      >Why I’m starting this series →</a
+    >
+  </main><Footer /></Layout
+>

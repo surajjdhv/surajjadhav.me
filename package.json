@@ -1,44 +1,56 @@
 {
-	"name": "eleventy-base-blog",
-	"version": "8.0.0",
-	"description": "A starter repository for a blog web site using the Eleventy site generator.",
-	"scripts": {
-		"build": "npx @11ty/eleventy",
-		"build-ghpages": "npx @11ty/eleventy --pathprefix=/eleventy-base-blog/",
-		"start": "npx @11ty/eleventy --serve --quiet",
-		"debug": "DEBUG=Eleventy* npx @11ty/eleventy",
-		"debugstart": "DEBUG=Eleventy* npx @11ty/eleventy --serve --quiet",
-		"benchmark": "DEBUG=Eleventy:Benchmark* npx @11ty/eleventy"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/11ty/eleventy-base-blog.git"
-	},
-	"author": {
-		"name": "Zach Leatherman",
-		"email": "zachleatherman@gmail.com",
-		"url": "https://zachleat.com/"
-	},
-	"license": "MIT",
-	"engines": {
-		"node": ">=14"
-	},
-	"funding": {
-		"type": "opencollective",
-		"url": "https://opencollective.com/11ty"
-	},
-	"bugs": {
-		"url": "https://github.com/11ty/eleventy-base-blog/issues"
-	},
-	"homepage": "https://github.com/11ty/eleventy-base-blog#readme",
-	"devDependencies": {
-		"@11ty/eleventy": "^2.0.1",
-		"@11ty/eleventy-img": "^3.1.1",
-		"@11ty/eleventy-navigation": "^0.3.5",
-		"@11ty/eleventy-plugin-bundle": "^1.0.4",
-		"@11ty/eleventy-plugin-rss": "^1.2.0",
-		"@11ty/eleventy-plugin-syntaxhighlight": "^5.0.0",
-		"luxon": "^3.3.0",
-		"markdown-it-anchor": "^8.6.7"
-	}
+  "name": "surajjadhav-me",
+  "type": "module",
+  "version": "1.0.0",
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "scripts": {
+    "dev": "astro dev",
+    "check": "astro check",
+    "icons": "node scripts/generate-favicons.mjs",
+    "prebuild": "npm run icons",
+    "build": "astro check && node scripts/clean-search-index.mjs && astro build && pagefind --site dist && cp -r dist/pagefind public/",
+    "test": "node --test tests/*.test.mjs",
+    "preview": "astro preview",
+    "sync": "astro sync",
+    "astro": "astro",
+    "format:check": "prettier --check .",
+    "format": "prettier --write ."
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^7.0.0",
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.3",
+    "@tailwindcss/vite": "^4.3.2",
+    "astro": "^7.0.3",
+    "dayjs": "^1.11.21",
+    "lodash.kebabcase": "^4.1.1",
+    "@astrojs/markdown-remark": "^7.2.0",
+    "rehype-callouts": "^2.2.0",
+    "remark-collapse": "^0.1.2",
+    "remark-toc": "^9.0.0",
+    "satori": "^0.26.0",
+    "sharp": "^0.35.2",
+    "slugify": "^1.6.9",
+    "tailwindcss": "^4.3.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.9",
+    "@pagefind/default-ui": "^1.5.2",
+    "@shikijs/transformers": "^4.3.0",
+    "@tailwindcss/typography": "^0.5.20",
+    "@types/lodash.kebabcase": "^4.1.9",
+    "pagefind": "^1.5.2",
+    "prettier": "3.9.3",
+    "prettier-plugin-astro": "0.14.1",
+    "prettier-plugin-tailwindcss": "^0.8.0",
+    "typescript": "^6.0.3"
+  },
+  "private": true,
+  "overrides": {
+    "@tailwindcss/typography": {
+      "postcss-selector-parser": "^6.1.5"
+    }
+  }
 }

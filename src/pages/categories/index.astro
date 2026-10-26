@@ -1,0 +1,43 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import { categories } from "@/data/series";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+const posts = getSortedPosts(await getCollection("posts"));
+---
+
+<Layout title="Categories | Suraj Jadhav"
+  ><Header /><main id="main-content" class="app-layout inner-page">
+    <a href="/posts/" class="back-link">← All writing</a><div
+      class="page-intro"
+    >
+      <span class="eyebrow">FOLLOW YOUR CURIOSITY</span><h1>
+        A few common threads.
+      </h1><p>Explore the broad themes behind the notes.</p>
+    </div><div class="category-list">
+      {
+        categories.map(category => (
+          <a class="category-row" href={`/categories/${category.slug}/`}>
+            <>
+              <div>
+                <>
+                  <h2>{category.name} ↗</h2>
+                  <p>{category.description}</p>
+                </>
+              </div>
+              <span>
+                {
+                  posts.filter(post => post.data.category === category.name)
+                    .length
+                }{" "}
+                posts
+              </span>
+            </>
+          </a>
+        ))
+      }
+    </div><a href="/tags/" class="text-link">Explore individual topics →</a>
+  </main><Footer /></Layout
+>

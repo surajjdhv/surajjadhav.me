@@ -1,0 +1,36 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { slugifyStr } from "@/utils/slugify";
+import config from "@/config";
+type Props = { variant?: "h2" | "h3" } & CollectionEntry<"posts">;
+const { variant: Heading = "h2", id, data, filePath } = Astro.props;
+const date = data.pubDatetime.toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: config.site.timezone,
+});
+---
+
+<li class="post-row">
+  <div class="post-meta">
+    <a href={`/categories/${data.category.toLowerCase()}/`}>{data.category}</a
+    ><span aria-hidden="true">/</span><time
+      datetime={data.pubDatetime.toISOString()}>{date}</time
+    >{
+      data.seriesDay && (
+        <span class="day-label">
+          Day {String(data.seriesDay).padStart(2, "0")}
+        </span>
+      )
+    }
+  </div>
+  <a href={getPostUrl(id, filePath, Astro.currentLocale)} class="post-title"
+    ><Heading>{data.title}</Heading><span aria-hidden="true">↗</span></a
+  >
+  <p class="post-description">{data.description}</p>
+  <div class="post-tags">
+    {data.tags.map(tag => <a href={`/tags/${slugifyStr(tag)}/`}>#{tag}</a>)}
+  </div>
+</li>

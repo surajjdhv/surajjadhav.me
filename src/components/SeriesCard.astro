@@ -1,0 +1,42 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getSeriesPosts } from "@/utils/series";
+import { series } from "@/data/series";
+type Props = {
+  item: (typeof series)[number];
+  posts: CollectionEntry<"posts">[];
+};
+const { item, posts } = Astro.props;
+const count = getSeriesPosts(posts, item.slug).length;
+---
+
+<a class="series-card" href={`/series/${item.slug}/`}>
+  <div class="series-card-top">
+    <span class="eyebrow"
+      ><span class="small-dot" aria-hidden="true"></span>THE LEARNING LOG</span
+    ><span class="status-label"
+      >{
+        count === item.target ? "Complete" : count ? "In progress" : item.status
+      }</span>
+  </div>
+  <h3>
+    <span class="series-hash" aria-hidden="true">#</span>{item.title}<span
+      class="series-arrow"
+      aria-hidden="true">↗</span>
+  </h3>
+  <p>Learning something new. Writing it down. Connecting the dots.</p>
+  <div class="series-progress">
+    <div class="mini-days" aria-hidden="true">
+      {
+        Array.from({ length: 20 }, (_, i) => (
+          <span class:list={{ filled: count >= (i + 1) * 5 }} />
+        ))
+      }
+    </div><span
+      ><strong>{String(count).padStart(2, "0")}</strong> / {item.target} days</span>
+  </div>
+  <div class="series-card-bottom">
+    <span>{item.hashtag}</span><span
+      >Follow the journey <span aria-hidden="true">→</span></span>
+  </div>
+</a>

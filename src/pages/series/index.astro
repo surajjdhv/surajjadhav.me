@@ -1,0 +1,26 @@
+---
+import { getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import SeriesCard from "@/components/SeriesCard.astro";
+import { series } from "@/data/series";
+const posts = await getCollection("posts");
+---
+
+<Layout
+  title="Series | Suraj Jadhav"
+  description="Follow a learning journey, one entry at a time."
+  ><Header /><main id="main-content" class="app-layout inner-page">
+    <a href="/" class="back-link">← Home</a><div class="page-intro">
+      <span class="eyebrow">CONNECTED NOTES</span><h1>
+        One thing leads to another.
+      </h1><p>
+        Some ideas need more than one post. Follow a journey from its first
+        question to wherever it goes next.
+      </p>
+    </div><div class="series-list">
+      {series.map(item => <SeriesCard {item} {posts} />)}
+    </div>
+  </main><Footer /></Layout
+>

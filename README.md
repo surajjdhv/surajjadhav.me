@@ -1,120 +1,119 @@
-# eleventy-base-blog v8
+# surajjadhav.me
 
-A starter repository showing how to build a blog with the [Eleventy](https://www.11ty.dev/) site generator (using the [v2.0 release](https://www.11ty.dev/blog/eleventy-v2/)).
+A fresh personal website and blog for Suraj Jadhav, built with **Astro** and **AstroPaper**. No content from the existing website was used.
 
-## Getting Started
+## Run locally
 
-* [Want a more generic/detailed getting started guide?](https://www.11ty.dev/docs/getting-started/)
+Requires Node.js 22.12 or newer.
 
-1. Make a directory and navigate to it:
-
-```
-mkdir my-blog-name
-cd my-blog-name
+```sh
+npm ci
+npm run dev
 ```
 
-2. Clone this Repository
-
-```
-git clone https://github.com/11ty/eleventy-base-blog.git .
-```
-
-_Optional:_ Review `eleventy.config.js` and `_data/metadata.js` to configure the site’s options and data.
-
-3. Install dependencies
-
-```
-npm install
+```sh
+npm run build       # Type check, static site, social images, Pagefind index
+npm test            # Check the built site's routes, links, feeds, series, and drafts
+npm run preview     # Preview the production build, including working search
 ```
 
-4. Run Eleventy
+Search uses Pagefind. Run a build before testing search in development; rebuild after editing posts to refresh the index.
 
-Generate a production-ready build to the `_site` folder:
+## Content organization
 
+- **Writing** (`/posts/`): all published posts, paginated.
+- **Categories** (`/categories/`): Learning, Building, Thoughts.
+- **Tags** (`/tags/`): smaller topics that can span categories.
+- **Series** (`/series/`): ordered journeys with their own landing page, day tracker, and previous/next entry navigation.
+- **Archives**, **RSS**, **search**, **sitemap**, and generated social images are included.
+
+The blog begins with **“After a decade in tech, I’m going deeper into AI”**, an introduction to the upcoming learning journey. It is not a numbered series entry, so progress stays at **0/100** until the first daily note is published. The earlier starter posts and draft template have been removed.
+
+### Add a post
+
+Create a Markdown or MDX file under `src/content/posts/`:
+
+```yaml
+---
+title: What I learned today
+description: A short description for the listing, search, and social previews.
+pubDatetime: 2026-10-27T09:00:00+05:30
+category: Learning
+tags: [ai, learning-in-public]
+draft: true
+---
 ```
-npx @11ty/eleventy
+
+Write below the frontmatter. Set `draft: false` when ready. Drafts are excluded from routes, listings, feeds, search, and day counts. Future posts are excluded from production until their publication time; a static site must be rebuilt to publish scheduled content. Dates display in Asia/Kolkata.
+
+### Publish a series day
+
+Create a post such as `src/content/posts/learning-ai/day-001.md` using the frontmatter above, then add:
+
+```yaml
+series: 100-days-of-learning-ai
+seriesDay: 1
 ```
 
-Or build and host on a local development server:
+Write the note, set its publication date, and set `draft: false`. Entries appear in day order regardless of publication date. Progress counts published entries, so a skipped day doesn't inflate completion. The schema rejects unknown series, missing or invalid day numbers, and days beyond the target. Duplicate days also fail the build.
 
+Add a new series in `src/data/series.ts`. Category labels live there too; if adding a category, also update the category enum in `src/content.config.ts`.
+
+Post URLs follow filenames and folders. Keep published filenames stable to preserve links. Giscus maps to a specific term using the post ID; set `commentId` to a permanent identifier before renaming a published post if you need to preserve its discussion (use the original post ID).
+
+## Giscus comments
+
+The lazy-loaded component is integrated on every post. It follows the site's light/dark theme and provides a GitHub fallback if the embed fails. Until configured, it displays a quiet link to your GitHub profile.
+
+1. Choose a **public GitHub repository** for discussions.
+2. Enable Discussions in that repository's settings.
+3. Install the [Giscus GitHub app](https://github.com/apps/giscus) for that repository.
+4. At [giscus.app](https://giscus.app/), choose the repository and a discussion category (Announcements is recommended). Copy `data-repo`, `data-repo-id`, `data-category`, and `data-category-id` into the corresponding values below.
+5. Copy `.env.example` to `.env`, fill in the values, then restart development or rebuild for production. Add the same values to your hosting provider's build environment.
+
+```dotenv
+PUBLIC_GISCUS_REPO=your-user/your-repository
+PUBLIC_GISCUS_REPO_ID=actual-id-from-giscus
+PUBLIC_GISCUS_CATEGORY=Announcements
+PUBLIC_GISCUS_CATEGORY_ID=actual-category-id-from-giscus
 ```
-npx @11ty/eleventy --serve
-```
 
-Or you can run [debug mode](https://www.11ty.dev/docs/debugging/) to see all the internals.
+These are public embed identifiers, **not access tokens**. No GitHub access token belongs in browser code. The integration uses a stable specific-term mapping and strict matching; don't change the mapping in the component after launch without migrating discussions. Live posting could not be tested without a configured repository.
 
-## Features
+## GitHub contribution chart
 
-- Using [Eleventy v2.0](https://www.11ty.dev/blog/eleventy-v2/) with zero-JavaScript output.
-	- Content is exclusively pre-rendered (this is a static site).
-	- Can easily [deploy to a subfolder without changing any content](https://www.11ty.dev/docs/plugins/html-base/)
-	- All URLs are decoupled from the content’s location on the file system.
-	- Configure templates via the [Eleventy Data Cascade](https://www.11ty.dev/docs/data-cascade/)
-- **Performance focused**: four-hundos Lighthouse score out of the box!
-	- [View the Lighthouse report for the latest build](https://eleventy-base-blog.netlify.app/reports/lighthouse/) courtesy of the [Netlify Lighthouse plugin](https://github.com/netlify/netlify-plugin-lighthouse).
-	- _0 Cumulative Layout Shift_
-	- _0ms Total Blocking Time_
-- Local development live reload provided by [Eleventy Dev Server](https://www.11ty.dev/docs/dev-server/).
-- Content-driven [navigation menu](https://www.11ty.dev/docs/plugins/navigation/)
-- [Image optimization](https://www.11ty.dev/docs/plugins/image/) via the `{% image %}` shortcode.
-	- Zero-JavaScript output.
-	- Support for modern image formats automatically (e.g. AVIF and WebP)
-	- Prefers `<img>` markup if possible (single image format) but switches automatically to `<picture>` for multiple image formats.
-	- Automated `<picture>` syntax markup with `srcset` and optional `sizes`
-	- Includes `width`/`height` attributes to avoid [content layout shift](https://web.dev/cls/).
-	- Includes `loading="lazy"` for native lazy loading without JavaScript.
-	- Includes [`decoding="async"`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLImageElement/decoding)
-	- Images can be co-located with blog post files.
-	- View the [Image plugin source code](https://github.com/11ty/eleventy-base-blog/blob/main/eleventy.config.images.js)
-- Per page CSS bundles [via `eleventy-plugin-bundle`](https://github.com/11ty/eleventy-plugin-bundle).
-- Built-in [syntax highlighter](https://www.11ty.dev/docs/plugins/syntaxhighlight/) (zero-JavaScript output).
-- Blog Posts
-	- Draft posts: use `draft: true` to mark a blog post as a draft. Drafts are **only** included during `--serve`/`--watch` and are excluded from full builds. View the [Drafts plugin source code](https://github.com/11ty/eleventy-base-blog/blob/main/eleventy.config.drafts.js).
-	- Automated next/previous links
-	- Accessible deep links to headings
-- Generated Pages
-	- Home, Archive, and About pages.
-	- [Feeds for Atom and JSON](https://www.11ty.dev/docs/plugins/rss/)
-	- `sitemap.xml`
-	- Zero-maintenance tag pages ([View on the Demo](https://eleventy-base-blog.netlify.app/tags/))
-	- Content not found (404) page
+The homepage loads real activity for **surajjdhv**, configured in `src/data/integrations.ts`. It fetches in the visitor's browser when the chart approaches the viewport, so activity refreshes without rebuilding. No GitHub token is needed. Colors adapt to the site's theme, daily cells have tooltips, and a screen-reader summary and GitHub profile link are provided.
 
-## Demos
+Public contribution data comes from the third-party [GitHub Contributions API](https://github.com/grubersjoe/github-contributions-api), which caches results for about an hour. A visitor's browser connects to that provider. If the service is unavailable, the profile link remains usable and no activity data is fabricated.
 
-- [Netlify](https://eleventy-base-blog.netlify.com/)
-- [GitHub Pages](https://11ty.github.io/eleventy-base-blog/)
-- [Remix on Glitch](https://glitch.com/~11ty-eleventy-base-blog)
-- [Cloudflare Pages](https://eleventy-base-blog-d2a.pages.dev/)
+## Customize
 
-## Deploy this to your own site
+- `astro-paper.config.ts`: name, domain, description, social links, timezone, pagination.
+- `src/styles/theme.css`: light/dark palettes and contribution colors.
+- `src/styles/global.css`: layouts and component styles.
+- `src/content/pages/about.md`: About page.
+- `src/data/series.ts`: categories and series definitions.
 
-Deploy this Eleventy site in just a few clicks on these services:
+## Deploy to your domain
 
-- [Get your own Eleventy web site on Netlify](https://app.netlify.com/start/deploy?repository=https://github.com/11ty/eleventy-base-blog)
-- If you run Eleventy locally you can drag your `_site` folder to [`drop.netlify.com`](https://drop.netlify.com/) to upload it without using `git`.
-- [Get your own Eleventy web site on Vercel](https://vercel.com/import/project?template=11ty%2Feleventy-base-blog)
-- [Try it out on Stackblitz](https://stackblitz.com/github/11ty/eleventy-base-blog)
-- Read more about [Deploying an Eleventy project](https://www.11ty.dev/docs/deployment/) to the web.
+The site is a static export. Use `npm ci && npm run build` as the build command and `dist` as the output directory with Cloudflare Pages, Netlify, Vercel, or another static host. Add your Giscus environment values at build time. Connect `surajjadhav.me` in your host and follow its DNS instructions. The canonical domain is already set to `https://surajjadhav.me/`.
 
-### Implementation Notes
+This project has **not** changed the current live website, DNS, or hosting account. Check old URLs and add host-specific redirects before switching the domain; the old content was intentionally not inspected.
 
-- `content/about/index.md` is an example of a content page.
-- `content/blog/` has the blog posts but really they can live in any directory. They need only the `posts` tag to be included in the blog posts [collection](https://www.11ty.dev/docs/collections/).
-- Use the `eleventyNavigation` key (via the [Eleventy Navigation plugin](https://www.11ty.dev/docs/plugins/navigation/)) in your front matter to add a template to the top level site navigation. This is in use on `content/index.njk` and `content/about/index.md`.
-- Content can be in _any template format_ (blog posts needn’t exclusively be markdown, for example). Configure your project’s supported templates in `eleventy.config.js` -> `templateFormats`.
-- The `public` folder in your input directory will be copied to the output folder (via `addPassthroughCopy` in the `eleventy.config.js` file). This means `./public/css/*` will live at `./_site/css/*` after your build completes.
-- Provides two content feeds:
-	- `content/feed/feed.njk`
-	- `content/feed/json.njk`
-- This project uses three [Eleventy Layouts](https://www.11ty.dev/docs/layouts/):
-	- `_includes/layouts/base.njk`: the top level HTML structure
-	- `_includes/layouts/home.njk`: the home page template (wrapped into `base.njk`)
-	- `_includes/layouts/post.njk`: the blog post template (wrapped into `base.njk`)
-- `_includes/postslist.njk` is a Nunjucks include and is a reusable component used to display a list of all the posts. `content/index.njk` has an example of how to use it.
+## Credits
 
-#### Content Security Policy
+Built on [AstroPaper](https://github.com/satnaing/astro-paper) by Sat Naing, under its included MIT license. The theme foundation is retained, with a new personal design, content model, series system, and integrations.
 
-If your site enforces a [Content Security Policy](https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP) (as public-facing sites should), you have a few choices (pick one):
+## Typography
 
-1. In `base.njk`, remove `<style>{% getBundle "css" %}</style>` and uncomment `<link rel="stylesheet" href="{% getBundleFileUrl "css" %}">`
-2. Configure the server with the CSP directive `style-src: 'unsafe-inline'` (less secure).
+- **Instrument Serif**: display headings, article titles, and post titles. The homepage accent line uses its real italic face.
+- **Manrope**: body text and interface, with 18–19px article text, 16–18px summaries, and 14–15px navigation.
+- **Google Sans Code**: code, dates, tags, chart labels, and day numbers.
+
+Astro downloads the font files during the build and serves them locally. Body and display faces are preloaded; `font-display: swap` keeps text visible during loading. Article text is limited to 42rem, with generous line spacing. Font families are configured in `astro.config.ts`; their roles are in `src/styles/theme.css` and `src/styles/global.css`.
+
+## Logo & favicons
+
+The **SJ monogram** lives in `src/assets/brand/sj-monogram.svg`. Its overlapping serif letterforms are outlined from Instrument Serif, so the mark stays consistent without loading a font. The header uses an open terracotta mark beside a quiet name wordmark.
+
+Run `npm run icons` after changing the master SVG. This generates the reusable `public/logo.svg`, SVG favicon, 32px PNG favicon, a 16/32/48px ICO, and a 180px Apple touch icon. The build runs this step automatically. Favicons use the same letterforms with a slightly stronger stroke on an ink circle for legibility at small sizes.

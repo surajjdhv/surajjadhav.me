@@ -1,0 +1,189 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getCollection, render } from "astro:content";
+import PostLayout from "@/layouts/PostLayout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Giscus from "@/components/Giscus.astro";
+import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
+import { getSeries, getSeriesPosts } from "@/utils/series";
+import { slugifyStr } from "@/utils/slugify";
+import config from "@/config";
+import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
+export async function getStaticPaths() {
+  return getSortedPosts(await getCollection("posts")).map(post => ({
+    params: { slug: getPostSlug(post.id, post.filePath) },
+    props: { post },
+  }));
+}
+type Props = { post: CollectionEntry<"posts"> };
+const { post } = Astro.props;
+const { data } = post;
+const { Content, headings } = await render(post);
+const series = data.series ? getSeries(data.series) : undefined;
+const seriesPosts = series
+  ? getSeriesPosts(await getCollection("posts"), series.slug)
+  : [];
+const index = seriesPosts.findIndex(item => item.id === post.id);
+const previous = seriesPosts[index - 1];
+const next = seriesPosts[index + 1];
+const date = data.pubDatetime.toLocaleDateString("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: config.site.timezone,
+});
+const readingMinutes = Math.max(
+  1,
+  Math.ceil((post.body ?? "").split(/\s+/).length / 220)
+);
+const image =
+  typeof data.ogImage === "string"
+    ? data.ogImage
+    : (data.ogImage?.src ??
+      (config.features.dynamicOgImage
+        ? `${getPostUrl(post.id, post.filePath).replace(/\/$/, "")}/index.png`
+        : resolveDefaultOgImagePath(config)));
+---
+
+<PostLayout
+  title={`${data.title} | ${config.site.title}`}
+  description={data.description}
+  ogImage={image}
+  canonicalURL={data.canonicalURL}
+  pubDatetime={data.pubDatetime}
+  modDatetime={data.modDatetime}
+>
+  <Header />
+  <main id="main-content" class="app-layout inner-page post-page">
+    <a class="back-link" href={series ? `/series/${series.slug}/` : "/posts/"}
+      >← {series ? series.title : "All writing"}</a
+    >
+    <header class="article-header">
+      <div class="post-meta">
+        <a href={`/categories/${data.category.toLowerCase()}/`}
+          >{data.category}</a
+        ><span aria-hidden="true">/</span>{
+          series && (
+            <span>
+              Day {data.seriesDay} of {series.target}
+              <span aria-hidden="true"> / </span>
+            </span>
+          )
+        }<span>{readingMinutes} min read</span>
+      </div><h1 data-pagefind-meta="title">{data.title}</h1><p>
+        {data.description}
+      </p><div class="article-byline">
+        <span>By {data.author}</span><time
+          datetime={data.pubDatetime.toISOString()}>{date}</time
+        >
+      </div>{
+        data.modDatetime && (
+          <p class="small-text muted">
+            Updated{" "}
+            <time datetime={data.modDatetime.toISOString()}>
+              {data.modDatetime.toLocaleDateString("en-GB", {
+                dateStyle: "long",
+                timeZone: config.site.timezone,
+              })}
+            </time>
+          </p>
+        )
+      }
+    </header>
+    {
+      data.starter && (
+        <aside class="starter-note" data-pagefind-ignore>
+          <strong>A starting point.</strong> This is a starter post for the new
+          site. Edit it to make it your own before publishing.
+        </aside>
+      )
+    }
+    {
+      headings.filter(heading => heading.depth === 2).length > 2 && (
+        <details class="article-toc">
+          <>
+            <summary>On this page</summary>
+            <ul>
+              {headings
+                .filter(heading => heading.depth === 2)
+                .map(heading => (
+                  <li>
+                    <a href={`#${heading.slug}`}>{heading.text}</a>
+                  </li>
+                ))}
+            </ul>
+          </>
+        </details>
+      )
+    }
+    <article id="article" data-pagefind-body class="app-prose">
+      <Content />
+    </article>
+    <div class="article-tags post-tags" aria-label="Tags">
+      {data.tags.map(tag => <a href={`/tags/${slugifyStr(tag)}/`}>#{tag}</a>)}
+    </div>
+    {
+      series && (
+        <aside class="series-context">
+          <>
+            <span class="eyebrow">PART OF A BIGGER JOURNEY</span>
+            <h2>
+              <a href={`/series/${series.slug}/`}>{series.title} →</a>
+            </h2>
+            <p class="small-text muted">
+              Day {data.seriesDay} · {seriesPosts.length} of {series.target}{" "}
+              notes published
+            </p>
+            <nav class="series-adjacent" aria-label="Series entries">
+              {previous ? (
+                <a href={getPostUrl(previous.id, previous.filePath)}>
+                  ← Day {previous.data.seriesDay}: {previous.data.title}
+                </a>
+              ) : (
+                <span class="small-text muted">You’re at the beginning.</span>
+              )}
+              {next && (
+                <a href={getPostUrl(next.id, next.filePath)}>
+                  Day {next.data.seriesDay}: {next.data.title} →
+                </a>
+              )}
+            </nav>
+          </>
+        </aside>
+      )
+    }
+    <Giscus discussionKey={data.commentId ?? post.id} />
+    <a href="#main-content" class="back-link">Back to top ↑</a>
+  </main>
+  <Footer />
+</PostLayout>
+<script>
+  function enhanceCodeBlocks() {
+    document.querySelectorAll<HTMLPreElement>("#article pre").forEach(pre => {
+      if (pre.querySelector("button")) return;
+      const button = document.createElement("button");
+      button.className = "copy-code";
+      button.textContent = "Copy";
+      button.setAttribute("aria-label", "Copy code to clipboard");
+      button.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(
+            pre.querySelector("code")?.textContent ?? ""
+          );
+          button.textContent = "Copied!";
+        } catch {
+          button.textContent = "Couldn’t copy";
+        }
+        setTimeout(() => {
+          button.textContent = "Copy";
+        }, 1500);
+      });
+      pre.style.position = "relative";
+      pre.append(button);
+    });
+  }
+  enhanceCodeBlocks();
+  document.addEventListener("astro:page-load", enhanceCodeBlocks);
+</script>

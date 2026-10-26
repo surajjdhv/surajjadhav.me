@@ -1,0 +1,143 @@
+---
+import { giscus, giscusEnabled, githubUsername } from "@/data/integrations";
+type Props = { discussionKey: string };
+const { discussionKey } = Astro.props;
+---
+
+<section
+  id="comments"
+  class="comments-section"
+  aria-labelledby="comments-title"
+  data-pagefind-ignore
+>
+  <span class="eyebrow">NOTES ARE BETTER WITH A CONVERSATION</span><h2
+    id="comments-title"
+  >
+    What do you think?
+  </h2>
+  {
+    giscusEnabled ? (
+      <giscus-comments
+        data-repo={giscus.repo}
+        data-repo-id={giscus.repoId}
+        data-category={giscus.category}
+        data-category-id={giscus.categoryId}
+        data-term={discussionKey}
+      >
+        <>
+          <p class="muted small-text" data-comment-status>
+            Loading the conversation…
+          </p>
+          <div class="giscus" />
+          <p data-comment-fallback hidden class="muted">
+            The conversation couldn’t load.{" "}
+            <a
+              class="text-link"
+              href={`https://github.com/${giscus.repo}/discussions`}
+            >
+              Join it on GitHub ↗
+            </a>
+          </p>
+        </>
+      </giscus-comments>
+    ) : (
+      <p class="muted">
+        Comments are on their way. In the meantime,{" "}
+        <a class="text-link" href={`https://github.com/${githubUsername}`}>
+          find me on GitHub ↗
+        </a>
+        .
+      </p>
+    )
+  }
+  <noscript
+    ><p>
+      Comments need JavaScript. You can also find the conversation on GitHub.
+    </p></noscript
+  >
+</section>
+<script>
+  class GiscusComments extends HTMLElement {
+    private themeObserver?: MutationObserver;
+    private intersectionObserver?: IntersectionObserver;
+    private timer?: ReturnType<typeof setTimeout>;
+    connectedCallback() {
+      this.intersectionObserver = new IntersectionObserver(
+        entries => {
+          if (entries.some(entry => entry.isIntersecting)) {
+            this.intersectionObserver?.disconnect();
+            this.load();
+          }
+        },
+        { rootMargin: "300px" }
+      );
+      this.intersectionObserver.observe(this);
+    }
+    private getTheme() {
+      return document.documentElement.dataset.theme === "dark"
+        ? "dark_dimmed"
+        : "light";
+    }
+    private message = (event: MessageEvent) => {
+      if (
+        event.origin !== "https://giscus.app" ||
+        event.source !==
+          this.querySelector<HTMLIFrameElement>("iframe.giscus-frame")
+            ?.contentWindow ||
+        !event.data?.giscus
+      )
+        return;
+      if (event.data.giscus.error) this.fallback();
+      else {
+        this.querySelector("[data-comment-status]")?.setAttribute("hidden", "");
+        clearTimeout(this.timer);
+      }
+    };
+    private fallback() {
+      this.querySelector("[data-comment-status]")?.setAttribute("hidden", "");
+      this.querySelector("[data-comment-fallback]")?.removeAttribute("hidden");
+    }
+    private load() {
+      const script = document.createElement("script");
+      script.src = "https://giscus.app/client.js";
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      for (const key of ["repo", "repoId", "category", "categoryId", "term"])
+        script.dataset[key] = this.dataset[key];
+      Object.assign(script.dataset, {
+        mapping: "specific",
+        strict: "1",
+        reactionsEnabled: "1",
+        emitMetadata: "1",
+        inputPosition: "top",
+        theme: this.getTheme(),
+        lang: "en",
+        loading: "lazy",
+      });
+      script.onerror = () => this.fallback();
+      window.addEventListener("message", this.message);
+      this.timer = setTimeout(() => this.fallback(), 20000);
+      this.querySelector(".giscus")?.append(script);
+      this.themeObserver = new MutationObserver(() => {
+        this.querySelector<HTMLIFrameElement>(
+          "iframe.giscus-frame"
+        )?.contentWindow?.postMessage(
+          { giscus: { setConfig: { theme: this.getTheme() } } },
+          "https://giscus.app"
+        );
+      });
+      this.themeObserver.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["data-theme"],
+      });
+    }
+    disconnectedCallback() {
+      this.intersectionObserver?.disconnect();
+      this.themeObserver?.disconnect();
+      window.removeEventListener("message", this.message);
+      clearTimeout(this.timer);
+    }
+  }
+  if (!customElements.get("giscus-comments"))
+    customElements.define("giscus-comments", GiscusComments);
+</script>

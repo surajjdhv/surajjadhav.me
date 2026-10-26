@@ -1,0 +1,53 @@
+---
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconSun from "@/assets/icons/IconSunHigh.svg";
+import LogoMark from "@/assets/brand/sj-monogram.svg";
+const links = [
+  { href: "/posts/", label: "Writing" },
+  { href: "/series/", label: "Series" },
+  { href: "/about/", label: "About" },
+];
+const path = Astro.url.pathname;
+---
+
+<a class="skip-link" href="#main-content">Skip to content</a>
+<header class="app-layout site-header">
+  <a href="/" class="wordmark" aria-label="Suraj Jadhav, home"
+    ><LogoMark
+      class="monogram"
+      width={46}
+      height={46}
+      aria-hidden="true"
+      focusable="false"
+    /><span class="wordmark-name">Suraj Jadhav</span></a
+  >
+  <nav aria-label="Main navigation">
+    {
+      links.map(link => (
+        <a
+          href={link.href}
+          aria-current={path.startsWith(link.href) ? "page" : undefined}
+        >
+          {link.label}
+        </a>
+      ))
+    }
+    <span class="nav-divider" aria-hidden="true"></span>
+    <a
+      class="icon-button"
+      href="/search/"
+      aria-label="Search posts"
+      title="Search posts"><IconSearch /></a
+    >
+    <button
+      id="theme-btn"
+      class="icon-button"
+      aria-label="Switch color theme"
+      title="Switch color theme"
+      ><IconMoon class="dark:hidden" /><IconSun
+        class="hidden dark:block"
+      /></button
+    >
+  </nav>
+</header>
