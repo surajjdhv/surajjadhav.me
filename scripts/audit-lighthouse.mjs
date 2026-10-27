@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url";
 import { execFile } from "node:child_process";
 import { promisify } from "node:util";
 import { brotliCompress, gzip, constants } from "node:zlib";
+import { summarizeSamples } from "./lighthouse-scores.mjs";
 
 const run = promisify(execFile);
 const brotli = promisify(brotliCompress);
@@ -128,45 +129,61 @@ try {
     await mkdir(directory, { recursive: true });
     for (const path of paths) {
       const name = path.replace(/^\/|\/$/g, "").replaceAll("/", "--") || "home";
-      const report = join(directory, name);
-      console.log(`Auditing ${factor}: ${path}`);
-      await run(
-        process.execPath,
-        [
-          cli,
-          new URL(path, base).href,
-          "--chrome-flags=--headless=new",
-          "--only-categories=performance,accessibility,best-practices,seo",
-          "--output=html",
-          "--output=json",
-          `--output-path=${report}`,
-          "--quiet",
-          ...(factor === "desktop" ? ["--preset=desktop"] : []),
-        ],
-        { timeout: 120000, maxBuffer: 2 * 1024 * 1024 }
-      );
-      const lhr = JSON.parse(await readFile(`${report}.report.json`, "utf8"));
-      const scores = Object.fromEntries(
-        Object.entries(lhr.categories).map(([key, category]) => [
-          key,
-          Math.round(category.score * 100),
-        ])
-      );
-      const result = {
-        path,
-        factor,
-        scores,
-        version: lhr.lighthouseVersion,
-        url: lhr.finalDisplayedUrl,
-        report: relative(resolve("."), `${report}.report.html`),
-        runtimeError: lhr.runtimeError ?? null,
-      };
+      // The homepage is the first and most variable cold load on CI. Always
+      // collect three independent samples, rather than retrying until one passes.
+      const sampleCount = path === "/" ? 3 : 1;
+      const samples = [];
+      for (let sample = 1; sample <= sampleCount; sample++) {
+        const report = join(
+          directory,
+          sampleCount > 1 ? `${name}--run-${sample}` : name
+        );
+        console.log(`Auditing ${factor}: ${path} (${sample}/${sampleCount})`);
+        await run(
+          process.execPath,
+          [
+            cli,
+            new URL(path, base).href,
+            "--chrome-flags=--headless=new",
+            "--only-categories=performance,accessibility,best-practices,seo",
+            "--output=html",
+            "--output=json",
+            `--output-path=${report}`,
+            "--quiet",
+            ...(factor === "desktop" ? ["--preset=desktop"] : []),
+          ],
+          { timeout: 120000, maxBuffer: 2 * 1024 * 1024 }
+        );
+        const lhr = JSON.parse(await readFile(`${report}.report.json`, "utf8"));
+        const scores = Object.fromEntries(
+          Object.entries(lhr.categories).map(([key, category]) => [
+            key,
+            Math.round(category.score * 100),
+          ])
+        );
+        const result = {
+          path,
+          factor,
+          scores,
+          version: lhr.lighthouseVersion,
+          url: lhr.finalDisplayedUrl,
+          report: relative(resolve("."), `${report}.report.html`),
+          runtimeError: lhr.runtimeError ?? null,
+        };
+        samples.push(result);
+        console.log(
+          `  ${Object.entries(scores)
+            .map(([key, score]) => `${key}: ${score}`)
+            .join(" | ")}`
+        );
+      }
+      const result = summarizeSamples(samples);
       results.push(result);
-      console.log(
-        `  ${Object.entries(scores)
-          .map(([key, score]) => `${key}: ${score}`)
-          .join(" | ")}`
-      );
+      if (sampleCount > 1) {
+        console.log(
+          `  Median performance: ${result.scores.performance}; all other categories use the lowest sample score.`
+        );
+      }
       await writeFile(
         join(output, "summary.json"),
         JSON.stringify(

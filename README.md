@@ -139,4 +139,6 @@ Requires a local Chrome installation (set `CHROME_PATH` if it is not detected). 
 
 The command fails if any tested page scores below 100 in Performance, Accessibility, Best Practices, or SEO. The GitHub Actions workflow runs the same audit for every normal page on pushes and pull requests, and retains the reports for inspection. The 404 page is intentionally excluded because its expected HTTP error and `noindex` policy are incompatible with a normal-page SEO audit.
 
+The homepage always receives three independent cold-browser runs on each device. Its performance gate uses the median score to reduce first-load timing variability; the other categories use the lowest score, and any browser runtime error fails the gate. All raw samples remain in the reports. Other pages receive one run per device. The footer links to the audit run for the published build, which must pass these checks before deployment.
+
 A local production-build result does not certify the live domain: hosting, network conditions, enabled third-party integrations, browser versions, and future content can affect scores. Use `--url` after deployment to measure the public site as served.
