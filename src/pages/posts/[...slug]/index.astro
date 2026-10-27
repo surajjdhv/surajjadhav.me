@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection, render } from "astro:content";
 import PostLayout from "@/layouts/PostLayout.astro";
@@ -58,7 +59,7 @@ const image =
   <Header />
   <main id="main-content" class="app-layout inner-page post-page">
     <a class="back-link" href={series ? `/series/${series.slug}/` : "/posts/"}
-      >← {series ? series.title : "All writing"}</a
+      ><Arrow direction="left" /> {series ? series.title : "All writing"}</a
     >
     <header class="article-header">
       <div class="post-meta">
@@ -130,7 +131,9 @@ const image =
           <>
             <span class="eyebrow">PART OF A BIGGER JOURNEY</span>
             <h2>
-              <a href={`/series/${series.slug}/`}>{series.title} →</a>
+              <a href={`/series/${series.slug}/`}>
+                {series.title} <Arrow direction="right" />
+              </a>
             </h2>
             <p class="small-text muted">
               Day {data.seriesDay} · {seriesPosts.length} of {series.target}{" "}
@@ -139,14 +142,16 @@ const image =
             <nav class="series-adjacent" aria-label="Series entries">
               {previous ? (
                 <a href={getPostUrl(previous.id, previous.filePath)}>
-                  ← Day {previous.data.seriesDay}: {previous.data.title}
+                  <Arrow direction="left" /> Day {previous.data.seriesDay}:{" "}
+                  {previous.data.title}
                 </a>
               ) : (
                 <span class="small-text muted">You’re at the beginning.</span>
               )}
               {next && (
                 <a href={getPostUrl(next.id, next.filePath)}>
-                  Day {next.data.seriesDay}: {next.data.title} →
+                  Day {next.data.seriesDay}: {next.data.title}{" "}
+                  <Arrow direction="right" />
                 </a>
               )}
             </nav>
@@ -155,7 +160,9 @@ const image =
       )
     }
     <Giscus discussionKey={data.commentId ?? post.id} />
-    <a href="#main-content" class="back-link">Back to top ↑</a>
+    <a href="#main-content" class="back-link"
+      >Back to top <Arrow direction="up" /></a
+    >
   </main>
   <Footer />
 </PostLayout>

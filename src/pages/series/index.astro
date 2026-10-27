@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -12,7 +13,9 @@ const posts = await getCollection("posts");
   title="Series | Suraj Jadhav"
   description="Follow a learning journey, one entry at a time."
   ><Header /><main id="main-content" class="app-layout inner-page">
-    <a href="/" class="back-link">← Home</a><div class="page-intro">
+    <a href="/" class="back-link"><Arrow direction="left" /> Home</a><div
+      class="page-intro"
+    >
       <span class="eyebrow">CONNECTED NOTES</span><h1>
         One thing leads to another.
       </h1><p>

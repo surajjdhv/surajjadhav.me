@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import { giscus, giscusEnabled, githubUsername } from "@/data/integrations";
 type Props = { discussionKey: string };
 const { discussionKey } = Astro.props;
@@ -35,7 +36,7 @@ const { discussionKey } = Astro.props;
               class="text-link"
               href={`https://github.com/${giscus.repo}/discussions`}
             >
-              Join it on GitHub ↗
+              Join it on GitHub <Arrow />
             </a>
           </p>
         </>
@@ -44,7 +45,7 @@ const { discussionKey } = Astro.props;
       <p class="muted">
         Comments are on their way. In the meantime,{" "}
         <a class="text-link" href={`https://github.com/${githubUsername}`}>
-          find me on GitHub ↗
+          find me on GitHub <Arrow />
         </a>
         .
       </p>

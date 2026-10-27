@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -24,16 +25,19 @@ const published = getSortedPosts(posts);
         Learning things.<br /><span>Sharing the journey.</span>
       </h1>
       <p class="hero-intro">
-        Hey, I’m Suraj <span class="wave" aria-hidden="true">↗</span>
+        Hey, I’m Suraj <span class="wave" aria-hidden="true"><Arrow /></span>
       </p>
       <p class="hero-description">
         A curious mind, figuring things out as I go. This is where I share my
         thoughts, what I’m building, and the things I learn along the way.
       </p>
       <div class="hero-links">
-        <a href="/about/">A little about me <span aria-hidden="true">→</span></a
+        <a href="/about/"
+          >A little about me <span aria-hidden="true"
+            ><Arrow direction="right" /></span
+          ></a
         ><span aria-hidden="true">/</span><a href="https://github.com/surajjdhv"
-          >Find me on GitHub <span aria-hidden="true">↗</span></a
+          >Find me on GitHub <span aria-hidden="true"><Arrow /></span></a
         >
       </div>
     </section>
@@ -49,7 +53,9 @@ const published = getSortedPosts(posts);
       <div class="section-heading">
         <h2 id="writing-title">Recent writing</h2><a
           class="small-link"
-          href="/posts/">All posts <span aria-hidden="true">→</span></a
+          href="/posts/"
+          >All posts <span aria-hidden="true"><Arrow direction="right" /></span
+          ></a
         >
       </div><ul>
         {published.slice(0, 4).map(post => <Card variant="h3" {...post} />)}
@@ -59,7 +65,7 @@ const published = getSortedPosts(posts);
       <div class="section-heading">
         <h2 id="topics-title">Follow your curiosity</h2><a
           class="small-link"
-          href="/tags/">All tags →</a
+          href="/tags/">All tags <Arrow direction="right" /></a
         >
       </div><div class="topic-links">
         {
@@ -72,7 +78,9 @@ const published = getSortedPosts(posts);
                     .length
                 }
               </span>
-              <span aria-hidden="true">↗</span>
+              <span aria-hidden="true">
+                <Arrow />
+              </span>
             </a>
           ))
         }
@@ -80,9 +88,10 @@ const published = getSortedPosts(posts);
     </section>
     <GitHubChart />
     <aside class="rss-note">
-      <span aria-hidden="true">↳</span><p>
+      <span aria-hidden="true"><Arrow direction="down-right" /></span><p>
         Good things take time. Follow along at your own pace.<br /><a
-          href="/rss.xml">Subscribe via RSS <span aria-hidden="true">↗</span></a
+          href="/rss.xml"
+          >Subscribe via RSS <span aria-hidden="true"><Arrow /></span></a
         >
       </p>
     </aside>

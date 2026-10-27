@@ -41,6 +41,8 @@ const types = {
 };
 
 async function htmlPages(directory) {
+  // Published Lighthouse HTML is a downloadable audit artifact, not a site route.
+  if (directory === join(root, "lighthouse", "reports")) return [];
   const entries = await readdir(directory, { withFileTypes: true });
   const groups = await Promise.all(
     entries.map(entry =>
@@ -129,9 +131,9 @@ try {
     await mkdir(directory, { recursive: true });
     for (const path of paths) {
       const name = path.replace(/^\/|\/$/g, "").replaceAll("/", "--") || "home";
-      // The homepage is the first and most variable cold load on CI. Always
-      // collect three independent samples, rather than retrying until one passes.
-      const sampleCount = path === "/" ? 3 : 1;
+      // Always collect three independent samples for the homepage and the first
+      // requested route, which is most affected by CI startup timing variability.
+      const sampleCount = path === "/" || path === paths[0] ? 3 : 1;
       const samples = [];
       for (let sample = 1; sample <= sampleCount; sample++) {
         const report = join(

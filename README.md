@@ -96,7 +96,7 @@ Public contribution data comes from the third-party [GitHub Contributions API](h
 
 ## Deploy with GitHub Pages
 
-The [GitHub Pages workflow](.github/workflows/lighthouse.yml) builds the site with Node.js 24, runs the site tests, and requires every audited page to score 100 in all four Lighthouse categories on mobile and desktop. Once both checks pass on `main`, it publishes the exact `dist` artifact from the mobile check. Pull requests run the same checks without deploying. You can also run the workflow manually from Actions.
+The [GitHub Pages workflow](.github/workflows/lighthouse.yml) builds the site with Node.js 24, runs the site tests, and requires every audited page to score 100 in all four Lighthouse categories on mobile and desktop. Once both checks pass on `main`, it takes the audited `dist` artifact, generates `/lighthouse/` from both audit summaries, and adds the full HTML reports. It checks the completed report page on both devices before publishing. Pull requests run the site checks without deploying. You can also run the workflow manually from Actions.
 
 One-time repository setup:
 
@@ -139,6 +139,6 @@ Requires a local Chrome installation (set `CHROME_PATH` if it is not detected). 
 
 The command fails if any tested page scores below 100 in Performance, Accessibility, Best Practices, or SEO. The GitHub Actions workflow runs the same audit for every normal page on pushes and pull requests, and retains the reports for inspection. The 404 page is intentionally excluded because its expected HTTP error and `noindex` policy are incompatible with a normal-page SEO audit.
 
-The homepage always receives three independent cold-browser runs on each device. Its performance gate uses the median score to reduce first-load timing variability; the other categories use the lowest score, and any browser runtime error fails the gate. All raw samples remain in the reports. Other pages receive one run per device. The footer links to the audit run for the published build, which must pass these checks before deployment.
+The homepage always receives three independent cold-browser runs on each device. A focused audit also samples its first requested route three times, including the generated report’s final verification. Performance uses the median score to reduce first-load timing variability; the other categories use the lowest score, and any browser runtime error fails the gate. All raw samples remain in the reports. Other pages receive one run per device. The footer’s four score circles link to the generated report for the published build, with per-page results, the source Action and revision, and every homepage sample. Raw Lighthouse HTML lives under `/lighthouse/reports/` and is excluded from site-route audit discovery. The report page’s own final verification is stored as the `report-page-verification` Action artifact.
 
 A local production-build result does not certify the live domain: hosting, network conditions, enabled third-party integrations, browser versions, and future content can affect scores. Use `--url` after deployment to measure the public site as served.

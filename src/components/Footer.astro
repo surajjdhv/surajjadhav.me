@@ -1,10 +1,9 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import type { HTMLAttributes } from "astro/types";
 type Props = { noMarginTop?: boolean } & HTMLAttributes<"footer">;
 const { noMarginTop, class: className, ...attrs } = Astro.props;
-// Pages only publishes after all four categories reach 100 on both devices.
-const auditRunId = process.env.GITHUB_RUN_ID ?? "40571673001";
-const auditUrl = `https://github.com/surajjdhv/surajjadhav.me/actions/runs/${auditRunId}`;
+const categories = ["Performance", "Accessibility", "Best Practices", "SEO"];
 ---
 
 <footer class:list={["app-layout site-footer", className]} {...attrs}>
@@ -19,19 +18,29 @@ const auditUrl = `https://github.com/surajjdhv/surajjadhav.me/actions/runs/${aud
   <div class="footer-links">
     <nav aria-label="Footer">
       <a href="/resume/">Resume</a>
-      <a href="/rss.xml">RSS ↗</a><a href="https://github.com/surajjdhv"
-        >GitHub ↗</a
+      <a href="/rss.xml">RSS <Arrow /></a><a href="https://github.com/surajjdhv"
+        >GitHub <Arrow /></a
       >
     </nav>
     <a
       class="lighthouse-score"
-      href={auditUrl}
+      href="/lighthouse/"
       aria-label="Lighthouse: 100 in Performance, Accessibility, Best Practices, and SEO on mobile and desktop. View audit results."
       title="Performance, Accessibility, Best Practices, SEO: 100/100 each on mobile and desktop"
     >
-      <span>Lighthouse</span><strong>4 × 100</strong><span aria-hidden="true"
-        >↗</span
-      >
+      <span>Lighthouse</span>
+      <span class="lighthouse-circles" aria-hidden="true">
+        {
+          categories.map(category => (
+            <span
+              class="lighthouse-circle"
+              title={`${category}: 100 out of 100`}
+            >
+              100
+            </span>
+          ))
+        }
+      </span>
     </a>
   </div>
 </footer>

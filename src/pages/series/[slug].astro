@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -21,9 +22,9 @@ const days = Array.from({ length: item.target }, (_, index) => ({
 
 <Layout title={`${item.title} | Suraj Jadhav`} description={item.description}
   ><Header /><main id="main-content" class="app-layout inner-page">
-    <a href="/series/" class="back-link">← All series</a><div
-      class="page-intro"
-    >
+    <a href="/series/" class="back-link"
+      ><Arrow direction="left" /> All series</a
+    ><div class="page-intro">
       <span class="eyebrow">{item.hashtag}</span><h1>{item.title}</h1><p>
         {item.description}
       </p>
@@ -88,7 +89,7 @@ const days = Array.from({ length: item.target }, (_, index) => ({
           <div class="empty-state">
             <>
               <span class="empty-symbol" aria-hidden="true">
-                ↳
+                <Arrow direction="down-right" />
               </span>
               <h3>Every journey starts with a question.</h3>
               <p>
@@ -96,14 +97,14 @@ const days = Array.from({ length: item.target }, (_, index) => ({
                 you’ll find it here when it’s ready.
               </p>
               <a href="/rss.xml" class="text-link">
-                Follow via RSS ↗
+                Follow via RSS <Arrow />
               </a>
             </>
           </div>
         )
       }
     </section><a class="text-link" href={item.introPost}
-      >Why I’m starting this series →</a
+      >Why I’m starting this series <Arrow direction="right" /></a
     >
   </main><Footer /></Layout
 >

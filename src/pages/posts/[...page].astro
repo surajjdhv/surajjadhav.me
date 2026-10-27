@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import type { GetStaticPaths } from "astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
@@ -30,9 +31,11 @@ const t = useTranslations(locale);
 
   <Main pageTitle={t.pages.postsTitle} pageDesc={t.pages.postsDesc}>
     <nav class="writing-filters" aria-label="Explore writing">
-      <a href="/categories/">Categories ↗</a><a href="/tags/">Tags ↗</a><a
-        href="/series/">Series ↗</a
-      ><a href="/archives/">Archive ↗</a>
+      <a href="/categories/">Categories <Arrow /></a><a href="/tags/"
+        >Tags <Arrow /></a
+      ><a href="/series/">Series <Arrow /></a><a href="/archives/"
+        >Archive <Arrow /></a
+      >
     </nav>
     <ul>
       {page.data.map(data => <Card {...data} />)}

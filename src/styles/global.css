@@ -573,22 +573,40 @@ giscus-comments {
 .lighthouse-score {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
-  padding: 5px 9px;
-  border: 1px solid var(--border);
-  border-radius: 4px;
+  gap: 10px;
   font-size: 11px;
   line-height: 1.5;
 }
-.lighthouse-score strong {
-  color: var(--foreground);
+.lighthouse-circles {
+  display: inline-flex;
+  gap: 6px;
+}
+:root {
+  --score-color: #176c48;
+}
+[data-theme="dark"] {
+  --score-color: #8cdfb3;
+}
+.lighthouse-circle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--score-color);
+  border-radius: 50%;
+  color: var(--score-color);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 400;
 }
 .lighthouse-score:hover {
-  border-color: var(--accent);
   color: var(--accent);
+}
+.arrow-icon {
+  display: inline-block;
+  vertical-align: -0.12em;
+  flex: none;
 }
 .inner-page {
   padding-top: 34px;

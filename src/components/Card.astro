@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import type { CollectionEntry } from "astro:content";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { slugifyStr } from "@/utils/slugify";
@@ -27,7 +28,7 @@ const date = data.pubDatetime.toLocaleDateString("en-GB", {
     }
   </div>
   <a href={getPostUrl(id, filePath, Astro.currentLocale)} class="post-title"
-    ><Heading>{data.title}</Heading><span aria-hidden="true">↗</span></a
+    ><Heading>{data.title}</Heading><span aria-hidden="true"><Arrow /></span></a
   >
   <p class="post-description">{data.description}</p>
   <div class="post-tags">

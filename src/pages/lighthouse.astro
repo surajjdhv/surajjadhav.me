@@ -1,0 +1,148 @@
+---
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
+import Arrow from "@/components/Arrow.astro";
+---
+
+<Layout
+  title="Lighthouse report | Suraj Jadhav"
+  description="Lighthouse results for this website, with mobile and desktop scores and the full audit reports from the published build."
+>
+  <Header />
+  <main id="main-content" class="app-layout inner-page lighthouse-page">
+    <a href="/" class="back-link"><Arrow direction="left" /> Home</a>
+    <div class="page-intro">
+      <span class="eyebrow">A SMALL SITE, BUILT WITH CARE</span>
+      <h1 class="page-title">Lighthouse report</h1>
+      <p class="page-description">
+        A closer look at how this site performs, on mobile and desktop.
+      </p>
+    </div>
+    <section aria-label="Audit results">
+      <!-- LIGHTHOUSE_REPORT_START -->
+      <p class="report-pending">
+        The report is generated from the GitHub Action’s audit results when the
+        site is published.
+      </p>
+      <!-- LIGHTHOUSE_REPORT_END -->
+    </section>
+  </main>
+  <Footer />
+</Layout>
+
+<style is:global>
+  .lighthouse-page .page-intro {
+    padding-bottom: 16px;
+    margin-bottom: 0;
+  }
+  .report-metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    padding: 24px 0 32px;
+    border-bottom: 1px solid var(--border);
+  }
+  .report-metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+    font-size: 13px;
+  }
+  .report-metric .lighthouse-circle {
+    width: 72px;
+    height: 72px;
+    border-width: 3px;
+    font-size: 24px;
+  }
+  .report-meta {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 8px 20px;
+    margin: 24px 0;
+    font-size: 13px;
+  }
+  .report-meta dt {
+    color: var(--muted-foreground);
+  }
+  .report-meta a,
+  .report-table a,
+  .report-notes a {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+  .report-notes {
+    color: var(--muted-foreground);
+    font-size: 14px;
+    line-height: 1.8;
+    margin: 24px 0 32px;
+  }
+  .report-notes p + p {
+    margin-top: 12px;
+  }
+  .report-table-scroll {
+    overflow-x: auto;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .report-table {
+    width: 100%;
+    min-width: 710px;
+    border-collapse: collapse;
+    font-size: 12px;
+  }
+  .report-table caption {
+    text-align: left;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 16px;
+  }
+  .report-table th,
+  .report-table td {
+    padding: 12px;
+    text-align: left;
+    border-top: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .report-table thead th {
+    font-weight: 600;
+    background: var(--muted);
+  }
+  .report-table tbody th {
+    max-width: 220px;
+    overflow-wrap: anywhere;
+    font-weight: 400;
+  }
+  .report-score {
+    font-family: var(--font-mono);
+    color: var(--score-color);
+  }
+  .report-samples {
+    margin-top: 6px;
+    color: var(--muted-foreground);
+  }
+  .report-samples a {
+    display: inline-block;
+    margin-right: 8px;
+    margin-top: 4px;
+  }
+  .report-pending {
+    color: var(--muted-foreground);
+    font-size: 14px;
+  }
+  @media (max-width: 640px) {
+    .report-metrics {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px 12px;
+    }
+    .report-meta {
+      grid-template-columns: 1fr;
+      gap: 3px;
+    }
+    .report-meta dd {
+      margin-bottom: 12px;
+    }
+  }
+</style>

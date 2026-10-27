@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -22,9 +23,9 @@ const posts = getSortedPosts(await getCollection("posts")).filter(
   title={`${category.name} | Suraj Jadhav`}
   description={category.description}
   ><Header /><main id="main-content" class="app-layout inner-page">
-    <a href="/categories/" class="back-link">← All categories</a><div
-      class="page-intro"
-    >
+    <a href="/categories/" class="back-link"
+      ><Arrow direction="left" /> All categories</a
+    ><div class="page-intro">
       <span class="eyebrow"
         >{posts.length} {posts.length === 1 ? "POST" : "POSTS"}</span
       ><h1>{category.name}</h1><p>{category.description}</p>

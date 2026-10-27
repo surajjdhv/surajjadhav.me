@@ -19,6 +19,17 @@ function walk(directory) {
 }
 const htmlFiles = walk(root).filter(path => path.endsWith(".html"));
 
+test("site arrows use SVGs and the footer links its four scores to the public report", () => {
+  for (const path of htmlFiles) {
+    const html = readFileSync(path, "utf8");
+    assert.doesNotMatch(html, /[↗→←↑↳]/, relative(root, path));
+    assert.match(html, /class="arrow-icon"/);
+    assert.match(html, /href="\/lighthouse\/"/);
+    const footer = html.slice(html.indexOf("<footer"));
+    assert.equal((footer.match(/class="lighthouse-circle"/g) ?? []).length, 4);
+  }
+});
+
 test("every emitted page has a main landmark, one heading, and canonical metadata", () => {
   for (const path of htmlFiles) {
     const html = readFileSync(path, "utf8");

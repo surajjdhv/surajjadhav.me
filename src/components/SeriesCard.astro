@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import type { CollectionEntry } from "astro:content";
 import { getSeriesPosts } from "@/utils/series";
 import { series } from "@/data/series";
@@ -24,7 +25,7 @@ const count = getSeriesPosts(posts, item.slug).length;
   <Heading>
     <span class="series-hash" aria-hidden="true">#</span>{item.title}<span
       class="series-arrow"
-      aria-hidden="true">↗</span
+      aria-hidden="true"><Arrow /></span
     >
   </Heading>
   <p>Learning something new. Writing it down. Connecting the dots.</p>
@@ -41,7 +42,9 @@ const count = getSeriesPosts(posts, item.slug).length;
   </div>
   <div class="series-card-bottom">
     <span>{item.hashtag}</span><span
-      >Follow the journey <span aria-hidden="true">→</span></span
+      >Follow the journey <span aria-hidden="true"
+        ><Arrow direction="right" /></span
+      ></span
     >
   </div>
 </a>

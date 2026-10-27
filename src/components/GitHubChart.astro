@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import { githubUsername } from "@/data/integrations";
 ---
 
@@ -6,7 +7,9 @@ import { githubUsername } from "@/data/integrations";
   <div class="section-heading">
     <h2 id="github-title">A little, often.</h2><a
       class="small-link"
-      href={`https://github.com/${githubUsername}`}>@{githubUsername} ↗</a>
+      href={`https://github.com/${githubUsername}`}
+      >@{githubUsername} <Arrow /></a
+    >
   </div>
   <p class="github-intro muted small-text">
     The small steps behind the scenes, over the last year.
@@ -44,11 +47,12 @@ import { githubUsername } from "@/data/integrations";
       Activity is taking a break. <a
         class="text-link"
         href={`https://github.com/${githubUsername}`}
-        >View contributions on GitHub ↗</a>
+        >View contributions on GitHub <Arrow /></a
+      >
     </p>
     <noscript
       ><a class="text-link" href={`https://github.com/${githubUsername}`}
-        >View my contribution chart on GitHub ↗</a
+        >View my contribution chart on GitHub <Arrow /></a
       ></noscript
     >
   </github-chart>

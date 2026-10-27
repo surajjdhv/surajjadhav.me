@@ -1,4 +1,5 @@
 ---
+import Arrow from "@/components/Arrow.astro";
 import { getCollection } from "astro:content";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
@@ -10,9 +11,9 @@ const posts = getSortedPosts(await getCollection("posts"));
 
 <Layout title="Categories | Suraj Jadhav"
   ><Header /><main id="main-content" class="app-layout inner-page">
-    <a href="/posts/" class="back-link">← All writing</a><div
-      class="page-intro"
-    >
+    <a href="/posts/" class="back-link"
+      ><Arrow direction="left" /> All writing</a
+    ><div class="page-intro">
       <span class="eyebrow">FOLLOW YOUR CURIOSITY</span><h1>
         A few common threads.
       </h1><p>Explore the broad themes behind the notes.</p>
@@ -23,7 +24,9 @@ const posts = getSortedPosts(await getCollection("posts"));
             <>
               <div>
                 <>
-                  <h2>{category.name} ↗</h2>
+                  <h2>
+                    {category.name} <Arrow />
+                  </h2>
                   <p>{category.description}</p>
                 </>
               </div>
@@ -38,6 +41,8 @@ const posts = getSortedPosts(await getCollection("posts"));
           </a>
         ))
       }
-    </div><a href="/tags/" class="text-link">Explore individual topics →</a>
+    </div><a href="/tags/" class="text-link"
+      >Explore individual topics <Arrow direction="right" /></a
+    >
   </main><Footer /></Layout
 >

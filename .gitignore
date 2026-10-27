@@ -30,6 +30,7 @@ public/pagefind
 
 # generated Lighthouse reports
 .lighthouse/
+.lighthouse-input/
 
 # pnpm
 .pnpm-store

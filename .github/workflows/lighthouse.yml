@@ -36,11 +36,14 @@ jobs:
       - run: npm test
       - name: Require 100 in Performance, Accessibility, Best Practices, and SEO
         run: npm run audit -- --${{ matrix.form_factor }}
-      - name: Upload the audited site for GitHub Pages
+      - name: Keep the audited site for report generation
         if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && matrix.form_factor == 'mobile'
-        uses: actions/upload-pages-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
+          name: audited-site
           path: dist
+          include-hidden-files: true
+          retention-days: 1
       - name: Keep the reports, including failures
         if: always()
         uses: actions/upload-artifact@v7
@@ -51,9 +54,48 @@ jobs:
           if-no-files-found: ignore
           retention-days: 14
 
+  report:
+    name: Generate and verify the public Lighthouse report
+    needs: lighthouse
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - uses: actions/download-artifact@v8
+        with:
+          name: audited-site
+          path: dist
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: lighthouse-*
+          path: .lighthouse-input
+      - name: Generate the report from this run's results
+        run: node scripts/generate-lighthouse-report.mjs
+      - name: Require 100 on the generated report, mobile and desktop
+        run: npm run audit -- /lighthouse/
+      - name: Upload the site and its public reports
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+      - name: Keep report-page verification results
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: report-page-verification
+          path: .lighthouse/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 14
+
   deploy:
     name: Deploy to GitHub Pages
-    needs: lighthouse
+    needs: report
     if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
     runs-on: ubuntu-latest
     timeout-minutes: 10
