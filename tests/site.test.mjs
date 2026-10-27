@@ -26,7 +26,7 @@ test("site arrows use SVGs and the footer links its four scores to the public re
     assert.match(html, /class="arrow-icon"/);
     assert.match(html, /href="\/lighthouse\/"/);
     const footer = html.slice(html.indexOf("<footer"));
-    assert.equal((footer.match(/class="lighthouse-circle"/g) ?? []).length, 4);
+    assert.match(footer, /<strong>4 × 100<\/strong>/);
   }
 });
 

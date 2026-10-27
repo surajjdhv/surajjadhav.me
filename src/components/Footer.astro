@@ -3,7 +3,6 @@ import Arrow from "@/components/Arrow.astro";
 import type { HTMLAttributes } from "astro/types";
 type Props = { noMarginTop?: boolean } & HTMLAttributes<"footer">;
 const { noMarginTop, class: className, ...attrs } = Astro.props;
-const categories = ["Performance", "Accessibility", "Best Practices", "SEO"];
 ---
 
 <footer class:list={["app-layout site-footer", className]} {...attrs}>
@@ -28,19 +27,7 @@ const categories = ["Performance", "Accessibility", "Best Practices", "SEO"];
       aria-label="Lighthouse: 100 in Performance, Accessibility, Best Practices, and SEO on mobile and desktop. View audit results."
       title="Performance, Accessibility, Best Practices, SEO: 100/100 each on mobile and desktop"
     >
-      <span>Lighthouse</span>
-      <span class="lighthouse-circles" aria-hidden="true">
-        {
-          categories.map(category => (
-            <span
-              class="lighthouse-circle"
-              title={`${category}: 100 out of 100`}
-            >
-              100
-            </span>
-          ))
-        }
-      </span>
+      <span>Lighthouse</span><strong>4 × 100</strong><Arrow />
     </a>
   </div>
 </footer>
