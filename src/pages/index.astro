@@ -33,21 +33,24 @@ const published = getSortedPosts(posts);
       <div class="hero-links">
         <a href="/about/">A little about me <span aria-hidden="true">→</span></a
         ><span aria-hidden="true">/</span><a href="https://github.com/surajjdhv"
-          >Find me on GitHub <span aria-hidden="true">↗</span></a>
+          >Find me on GitHub <span aria-hidden="true">↗</span></a
+        >
       </div>
     </section>
     <section class="home-series" aria-labelledby="series-title">
       <div class="section-heading">
         <h2 id="series-title">Learning in public</h2><span
           class="section-index"
-          aria-hidden="true">01 /</span>
-      </div><SeriesCard item={series[0]} {posts} />
+          aria-hidden="true">01 /</span
+        >
+      </div><SeriesCard item={series[0]} {posts} heading="h3" />
     </section>
     <section class="home-writing" aria-labelledby="writing-title">
       <div class="section-heading">
         <h2 id="writing-title">Recent writing</h2><a
           class="small-link"
-          href="/posts/">All posts <span aria-hidden="true">→</span></a>
+          href="/posts/">All posts <span aria-hidden="true">→</span></a
+        >
       </div><ul>
         {published.slice(0, 4).map(post => <Card variant="h3" {...post} />)}
       </ul>
@@ -56,7 +59,8 @@ const published = getSortedPosts(posts);
       <div class="section-heading">
         <h2 id="topics-title">Follow your curiosity</h2><a
           class="small-link"
-          href="/tags/">All tags →</a>
+          href="/tags/">All tags →</a
+        >
       </div><div class="topic-links">
         {
           categories.map(category => (
@@ -78,8 +82,8 @@ const published = getSortedPosts(posts);
     <aside class="rss-note">
       <span aria-hidden="true">↳</span><p>
         Good things take time. Follow along at your own pace.<br /><a
-          href="/rss.xml"
-          >Subscribe via RSS <span aria-hidden="true">↗</span></a>
+          href="/rss.xml">Subscribe via RSS <span aria-hidden="true">↗</span></a
+        >
       </p>
     </aside>
   </main>

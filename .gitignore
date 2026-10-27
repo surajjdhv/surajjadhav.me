@@ -28,6 +28,9 @@ pnpm-debug.log*
 # pagefind
 public/pagefind
 
+# generated Lighthouse reports
+.lighthouse/
+
 # pnpm
 .pnpm-store
 

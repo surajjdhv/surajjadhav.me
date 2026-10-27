@@ -53,6 +53,11 @@ body {
 .text-link {
   color: var(--accent);
 }
+.text-link {
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+}
 .muted {
   color: var(--muted-foreground);
 }
@@ -266,7 +271,7 @@ a:hover {
   white-space: nowrap;
   background: var(--background);
 }
-.series-card h3 {
+.series-card :is(h2, h3) {
   display: flex;
   align-items: center;
   font-family: var(--font-display);
@@ -826,7 +831,6 @@ giscus-comments {
 .post-tags,
 .section-index,
 .day-grid,
-.series-progress > span,
 .progress-caption,
 .chart-months,
 .chart-caption,
@@ -966,7 +970,7 @@ samp {
   .series-card {
     padding: 20px 17px 16px;
   }
-  .series-card h3 {
+  .series-card :is(h2, h3) {
     letter-spacing: -0.02em;
     font-size: 28px;
   }

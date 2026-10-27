@@ -1,0 +1,40 @@
+name: Lighthouse
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lighthouse:
+    name: Lighthouse (${{ matrix.form_factor }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    strategy:
+      fail-fast: false
+      matrix:
+        form_factor: [mobile, desktop]
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run build
+      - run: npm test
+      - name: Require 100 in Performance, Accessibility, Best Practices, and SEO
+        run: npm run audit -- --${{ matrix.form_factor }}
+      - name: Keep the reports, including failures
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: lighthouse-${{ matrix.form_factor }}
+          path: .lighthouse/
+          include-hidden-files: true
+          if-no-files-found: ignore
+          retention-days: 14

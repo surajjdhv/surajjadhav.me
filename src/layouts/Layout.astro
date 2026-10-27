@@ -61,14 +61,19 @@ const rssHref = getAssetPath("rss.xml");
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
 
-    <!-- Locally served fonts; preload the two faces used above the fold. -->
+    <!-- Preload the local faces actually used above the fold. -->
     <Font
       cssVariable="--font-manrope"
       preload={[{ subset: "latin", weight: 400, style: "normal" }]}
     />
     <Font
       cssVariable="--font-instrument-serif"
-      preload={[{ subset: "latin", weight: 400, style: "normal" }]}
+      preload={Astro.url.pathname === "/"
+        ? [
+            { subset: "latin", weight: 400, style: "normal" },
+            { subset: "latin", weight: 400, style: "italic" },
+          ]
+        : [{ subset: "latin", weight: 400, style: "normal" }]}
     />
     <Font cssVariable="--font-google-sans-code" preload={false} />
 

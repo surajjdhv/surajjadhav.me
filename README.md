@@ -117,3 +117,19 @@ Astro downloads the font files during the build and serves them locally. Body an
 The **SJ monogram** lives in `src/assets/brand/sj-monogram.svg`. Its overlapping serif letterforms are outlined from Instrument Serif, so the mark stays consistent without loading a font. The header uses an open terracotta mark beside a quiet name wordmark.
 
 Run `npm run icons` after changing the master SVG. This generates the reusable `public/logo.svg`, SVG favicon, 32px PNG favicon, a 16/32/48px ICO, and a 180px Apple touch icon. The build runs this step automatically. Favicons use the same letterforms with a slightly stronger stroke on an ink circle for legibility at small sizes.
+
+## Lighthouse
+
+```sh
+npm run build
+npm run audit                    # Every regular HTML page, mobile and desktop
+npm run audit -- --mobile /      # A focused homepage check
+npm run audit -- --desktop /resume/
+npm run audit -- --url=https://surajjadhav.me / /posts/a-decade-in-tech-learning-ai/
+```
+
+Requires a local Chrome installation (set `CHROME_PATH` if it is not detected). The audit uses Lighthouse's standard mobile and desktop presets with cold browser profiles. Local runs serve the real `dist` export with production compression and the same immutable asset policy declared for Netlify. Reports and a score summary are saved under `.lighthouse/`, which is not committed.
+
+The command fails if any tested page scores below 100 in Performance, Accessibility, Best Practices, or SEO. The GitHub Actions workflow runs the same audit for every normal page on pushes and pull requests, and retains the reports for inspection. The 404 page is intentionally excluded because its expected HTTP error and `noindex` policy are incompatible with a normal-page SEO audit.
+
+A local production-build result does not certify the live domain: hosting, network conditions, enabled third-party integrations, browser versions, and future content can affect scores. Use `--url` after deployment to measure the public site as served.

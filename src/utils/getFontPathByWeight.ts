@@ -11,12 +11,16 @@ export function getFontPathByWeight(
   const style = options?.style ?? "normal";
   const format = options?.format ?? "truetype";
 
-  for (const font of fonts) {
-    if (font.weight === String(weight) && font.style === style) {
-      const src = font.src.find(file => file.format === format) ?? font.src[0];
-      if (src) return src.url;
-    }
-  }
+  const sources = fonts
+    .filter(font => font.weight === String(weight) && font.style === style)
+    .flatMap(font => font.src);
 
-  return undefined;
+  // Providers can emit WOFF2 and TrueType as separate entries for the same
+  // weight. Search all entries before falling back: Satori cannot read WOFF2.
+  return (
+    sources.find(file => file.format === format) ??
+    sources.find(file =>
+      ["truetype", "opentype", "woff"].includes(file.format ?? "")
+    )
+  )?.url;
 }

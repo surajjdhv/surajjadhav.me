@@ -21,6 +21,11 @@ import config from "./astro-paper.config";
 
 export default defineConfig({
   site: config.site.url,
+  build: {
+    // This text-focused site has a small shared stylesheet. Inline it so the
+    // first render does not wait for another mobile-network round trip.
+    inlineStylesheets: "always",
+  },
   integrations: [
     mdx(),
     sitemap({
@@ -84,13 +89,42 @@ export default defineConfig({
     {
       name: "Google Sans Code",
       cssVariable: "--font-google-sans-code",
-      provider: fontProviders.google(),
+      provider: fontProviders.local(),
+      options: {
+        variants: [
+          {
+            weight: 400,
+            style: "normal",
+            src: [
+              "./node_modules/@fontsource/google-sans-code/files/google-sans-code-latin-400-normal.woff2",
+            ],
+          },
+          {
+            weight: 700,
+            style: "normal",
+            src: [
+              "./node_modules/@fontsource/google-sans-code/files/google-sans-code-latin-700-normal.woff2",
+            ],
+          },
+        ],
+      },
       fallbacks: ["monospace"],
       weights: [400, 700],
       styles: ["normal"],
       subsets: ["latin"],
-      formats: ["woff", "ttf"],
+      formats: ["woff2"],
       display: "swap",
+    },
+    {
+      // Satori needs TrueType, but these faces must never be included in the
+      // browser's @font-face rules or they override the smaller WOFF2 files.
+      name: "Google Sans Code",
+      cssVariable: "--font-og-mono",
+      provider: fontProviders.google(),
+      fallbacks: ["monospace"],
+      weights: [400, 700],
+      styles: ["normal"],
+      formats: ["ttf"],
     },
   ],
   env: {

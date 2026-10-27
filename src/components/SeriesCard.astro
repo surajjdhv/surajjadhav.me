@@ -3,10 +3,11 @@ import type { CollectionEntry } from "astro:content";
 import { getSeriesPosts } from "@/utils/series";
 import { series } from "@/data/series";
 type Props = {
+  heading?: "h2" | "h3";
   item: (typeof series)[number];
   posts: CollectionEntry<"posts">[];
 };
-const { item, posts } = Astro.props;
+const { item, posts, heading: Heading = "h2" } = Astro.props;
 const count = getSeriesPosts(posts, item.slug).length;
 ---
 
@@ -17,13 +18,15 @@ const count = getSeriesPosts(posts, item.slug).length;
     ><span class="status-label"
       >{
         count === item.target ? "Complete" : count ? "In progress" : item.status
-      }</span>
+      }</span
+    >
   </div>
-  <h3>
+  <Heading>
     <span class="series-hash" aria-hidden="true">#</span>{item.title}<span
       class="series-arrow"
-      aria-hidden="true">↗</span>
-  </h3>
+      aria-hidden="true">↗</span
+    >
+  </Heading>
   <p>Learning something new. Writing it down. Connecting the dots.</p>
   <div class="series-progress">
     <div class="mini-days" aria-hidden="true">
@@ -33,10 +36,12 @@ const count = getSeriesPosts(posts, item.slug).length;
         ))
       }
     </div><span
-      ><strong>{String(count).padStart(2, "0")}</strong> / {item.target} days</span>
+      ><strong>{String(count).padStart(2, "0")}</strong> / {item.target} days</span
+    >
   </div>
   <div class="series-card-bottom">
     <span>{item.hashtag}</span><span
-      >Follow the journey <span aria-hidden="true">→</span></span>
+      >Follow the journey <span aria-hidden="true">→</span></span
+    >
   </div>
 </a>

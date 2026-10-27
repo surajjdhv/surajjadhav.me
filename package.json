@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "astro dev",
     "check": "astro check",
+    "audit": "node scripts/audit-lighthouse.mjs",
     "icons": "node scripts/generate-favicons.mjs",
     "prebuild": "npm run icons",
     "build": "astro check && node scripts/clean-search-index.mjs && astro build && pagefind --site dist && cp -r dist/pagefind public/",
@@ -19,14 +20,15 @@
     "format": "prettier --write ."
   },
   "dependencies": {
+    "@astrojs/markdown-remark": "^7.2.0",
     "@astrojs/mdx": "^7.0.0",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
+    "@fontsource/google-sans-code": "^5.3.2",
     "@tailwindcss/vite": "^4.3.2",
     "astro": "^7.0.3",
     "dayjs": "^1.11.21",
     "lodash.kebabcase": "^4.1.1",
-    "@astrojs/markdown-remark": "^7.2.0",
     "rehype-callouts": "^2.2.0",
     "remark-collapse": "^0.1.2",
     "remark-toc": "^9.0.0",
@@ -41,6 +43,7 @@
     "@shikijs/transformers": "^4.3.0",
     "@tailwindcss/typography": "^0.5.20",
     "@types/lodash.kebabcase": "^4.1.9",
+    "lighthouse": "^13.5.0",
     "pagefind": "^1.5.2",
     "prettier": "3.9.3",
     "prettier-plugin-astro": "0.14.1",
