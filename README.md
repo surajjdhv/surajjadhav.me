@@ -4,7 +4,7 @@ A fresh personal website and blog for Suraj Jadhav, built with **Astro** and **A
 
 ## Run locally
 
-Requires Node.js 22.12 or newer.
+Use Node.js 24, as specified in `.nvmrc` and the deployment workflow.
 
 ```sh
 npm ci
@@ -94,11 +94,18 @@ Public contribution data comes from the third-party [GitHub Contributions API](h
 - `src/content/pages/about.md`: About page.
 - `src/data/series.ts`: categories and series definitions.
 
-## Deploy to your domain
+## Deploy with GitHub Pages
 
-The site is a static export. Use `npm ci && npm run build` as the build command and `dist` as the output directory with Cloudflare Pages, Netlify, Vercel, or another static host. Add your Giscus environment values at build time. Connect `surajjadhav.me` in your host and follow its DNS instructions. The canonical domain is already set to `https://surajjadhav.me/`.
+The [GitHub Pages workflow](.github/workflows/lighthouse.yml) builds the site with Node.js 24, runs the site tests, and requires every audited page to score 100 in all four Lighthouse categories on mobile and desktop. Once both checks pass on `main`, it publishes the exact `dist` artifact from the mobile check. Pull requests run the same checks without deploying. You can also run the workflow manually from Actions.
 
-This project has **not** changed the current live website, DNS, or hosting account. Check old URLs and add host-specific redirects before switching the domain; the old content was intentionally not inspected.
+One-time repository setup:
+
+1. Open **Settings → Pages → Build and deployment** and select **GitHub Actions** as the source.
+2. In **Settings → Secrets and variables → Actions → Variables**, add the public Giscus values listed above when ready. The workflow also accepts `PUBLIC_GOOGLE_SITE_VERIFICATION`. No personal access token is needed; deployment uses GitHub's built-in token.
+3. Set **Custom domain** to `surajjadhav.me` in Pages settings. The Astro site URL and `public/CNAME` already use that domain, and `public/.nojekyll` is included in the export.
+4. When ready to switch away from the VPS, follow [GitHub's custom-domain DNS instructions](https://docs.github.com/en/pages/configuring-a-custom-domain-for-your-github-pages-site/managing-a-custom-domain-for-your-github-pages-site). Point the apex domain at GitHub Pages and, if using `www`, point its CNAME to `surajjdhv.github.io`. Enable **Enforce HTTPS** once GitHub has issued the certificate.
+
+The site is configured for the custom domain at `/`; it does not use the `/surajjadhav.me/` project-path base. Configure the custom domain before checking the published site's navigation and assets. Changing workflow files does not change DNS or move traffic away from the VPS. Check old URLs and arrange any needed redirects before the DNS switch; the old content was intentionally not inspected.
 
 ## Credits
 

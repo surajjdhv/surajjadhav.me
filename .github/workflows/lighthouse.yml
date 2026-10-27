@@ -1,4 +1,4 @@
-name: Lighthouse
+name: GitHub Pages
 
 on:
   push:
@@ -8,6 +8,13 @@ on:
 
 permissions:
   contents: read
+
+env:
+  PUBLIC_GISCUS_REPO: ${{ vars.PUBLIC_GISCUS_REPO }}
+  PUBLIC_GISCUS_REPO_ID: ${{ vars.PUBLIC_GISCUS_REPO_ID }}
+  PUBLIC_GISCUS_CATEGORY: ${{ vars.PUBLIC_GISCUS_CATEGORY || 'Announcements' }}
+  PUBLIC_GISCUS_CATEGORY_ID: ${{ vars.PUBLIC_GISCUS_CATEGORY_ID }}
+  PUBLIC_GOOGLE_SITE_VERIFICATION: ${{ vars.PUBLIC_GOOGLE_SITE_VERIFICATION }}
 
 jobs:
   lighthouse:
@@ -29,6 +36,11 @@ jobs:
       - run: npm test
       - name: Require 100 in Performance, Accessibility, Best Practices, and SEO
         run: npm run audit -- --${{ matrix.form_factor }}
+      - name: Upload the audited site for GitHub Pages
+        if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request' && matrix.form_factor == 'mobile'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
       - name: Keep the reports, including failures
         if: always()
         uses: actions/upload-artifact@v7
@@ -38,3 +50,25 @@ jobs:
           include-hidden-files: true
           if-no-files-found: ignore
           retention-days: 14
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: lighthouse
+    if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Publish the audited site
+        id: deployment
+        uses: actions/deploy-pages@v4
