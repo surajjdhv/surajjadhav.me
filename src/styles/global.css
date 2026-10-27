@@ -564,6 +564,32 @@ giscus-comments {
   gap: 20px;
   align-items: start;
 }
+.footer-links {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 12px;
+}
+.lighthouse-score {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 5px 9px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.lighthouse-score strong {
+  color: var(--foreground);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+}
+.lighthouse-score:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
 .inner-page {
   padding-top: 34px;
   padding-bottom: 64px;
@@ -1041,6 +1067,9 @@ samp {
   }
   .site-footer nav {
     gap: 12px;
+  }
+  .footer-links {
+    align-items: flex-start;
   }
   .footer-note {
     font-size: 11px;

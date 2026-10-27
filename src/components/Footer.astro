@@ -2,6 +2,9 @@
 import type { HTMLAttributes } from "astro/types";
 type Props = { noMarginTop?: boolean } & HTMLAttributes<"footer">;
 const { noMarginTop, class: className, ...attrs } = Astro.props;
+// Pages only publishes after all four categories reach 100 on both devices.
+const auditRunId = process.env.GITHUB_RUN_ID ?? "40571673001";
+const auditUrl = `https://github.com/surajjdhv/surajjadhav.me/actions/runs/${auditRunId}`;
 ---
 
 <footer class:list={["app-layout site-footer", className]} {...attrs}>
@@ -13,10 +16,20 @@ const { noMarginTop, class: className, ...attrs } = Astro.props;
       ></span
     >
   </div>
-  <nav aria-label="Footer">
-    <a href="/resume/">Resume</a>
-    <a href="/rss.xml">RSS ↗</a><a href="https://github.com/surajjdhv"
-      >GitHub ↗</a
+  <div class="footer-links">
+    <nav aria-label="Footer">
+      <a href="/resume/">Resume</a>
+      <a href="/rss.xml">RSS ↗</a><a href="https://github.com/surajjdhv"
+        >GitHub ↗</a
+      >
+    </nav>
+    <a
+      class="lighthouse-score"
+      href={auditUrl}
+      aria-label="Lighthouse: 100 in Performance, Accessibility, Best Practices, and SEO on mobile and desktop. View audit results."
+      title="Performance, Accessibility, Best Practices, SEO: 100/100 each on mobile and desktop"
     >
-  </nav>
+      <span>Lighthouse</span><strong>4 × 100</strong><span aria-hidden="true">↗</span>
+    </a>
+  </div>
 </footer>
