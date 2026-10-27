@@ -30,9 +30,11 @@ function persist(): void {
 }
 
 function reflect(): void {
-  const root = document.firstElementChild;
-  root?.setAttribute("data-theme", themeValue);
-  root?.classList.toggle("dark", themeValue === DARK);
+  const root = document.documentElement;
+  if (root.getAttribute("data-theme") !== themeValue) {
+    root.setAttribute("data-theme", themeValue);
+  }
+  root.classList.toggle("dark", themeValue === DARK);
   document
     .querySelector("#theme-btn")
     ?.setAttribute(
@@ -40,9 +42,9 @@ function reflect(): void {
       `Switch to ${themeValue === DARK ? LIGHT : DARK} theme`
     );
 
-  // Fill <meta name="theme-color"> with the computed background colour so
-  // Android's browser chrome matches the page background.
-  const bg = window.getComputedStyle(document.body).backgroundColor;
+  // Read the root design token instead of the body's computed background:
+  // this keeps browser chrome in sync without forcing body layout at startup.
+  const bg = window.getComputedStyle(root).getPropertyValue("--background").trim();
   document
     .querySelector("meta[name='theme-color']")
     ?.setAttribute("content", bg);

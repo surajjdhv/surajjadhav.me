@@ -144,7 +144,8 @@ const rssHref = getAssetPath("rss.xml");
       })();
     </script>
 
-    <ClientRouter />
+    <!-- Keep the landing page's first load light: use native navigation there. -->
+    {Astro.url.pathname !== "/" && <ClientRouter />}
   </head>
   <body
     class="bg-background font-app text-foreground selection:bg-accent/75 selection:text-accent-foreground flex min-h-svh flex-col"
