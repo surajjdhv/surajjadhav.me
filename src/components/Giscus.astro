@@ -88,11 +88,20 @@ const { discussionKey } = Astro.props;
         !event.data?.giscus
       )
         return;
-      if (event.data.giscus.error) this.fallback();
-      else {
-        this.querySelector("[data-comment-status]")?.setAttribute("hidden", "");
-        clearTimeout(this.timer);
+      const error = event.data.giscus.error;
+      // A new post has no discussion until its first comment or reaction.
+      // Giscus still renders a working comment box in this expected state.
+      if (error && !String(error).includes("Discussion not found")) {
+        this.fallback();
+        return;
       }
+      this.querySelector("[data-comment-status]")?.setAttribute("hidden", "");
+      if (error || event.data.giscus.discussion)
+        this.querySelector("[data-comment-fallback]")?.setAttribute(
+          "hidden",
+          ""
+        );
+      clearTimeout(this.timer);
     };
     private fallback() {
       this.querySelector("[data-comment-status]")?.setAttribute("hidden", "");

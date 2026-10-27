@@ -139,7 +139,14 @@ test("the introduction has comments and a social image without a starter label",
   assert.match(html, /I don’t have a degree/);
   assert.match(html, /my maths foundations need work/);
   assert.match(html, /id="comments"/);
-  assert.match(html, /Comments are on their way/);
+  assert.match(
+    html,
+    /<giscus-comments[^>]+data-repo="surajjdhv\/surajjadhav.me"/
+  );
+  assert.match(html, /data-repo-id="R_kgDOKn2RmQ"/);
+  assert.match(html, /data-category-id="DIC_kwDOKn2Rmc4CayJ-"/);
+  assert.match(html, /data-term="a-decade-in-tech-learning-ai"/);
+  assert.doesNotMatch(html, /Comments are on their way/);
   const png = readFileSync(join(root, `posts/${introSlug}/index.png`));
   assert.equal(png.subarray(1, 4).toString(), "PNG");
 });

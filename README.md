@@ -63,7 +63,11 @@ Post URLs follow filenames and folders. Keep published filenames stable to prese
 
 ## Giscus comments
 
-The lazy-loaded component is integrated on every post. It follows the site's light/dark theme and provides a GitHub fallback if the embed fails. Until configured, it displays a quiet link to your GitHub profile.
+Comments are enabled on every post using `surajjdhv/surajjadhav.me` and its **Announcements** discussion category. The repository is public, Discussions is enabled, and Giscus is installed. The public identifiers are configured in `src/data/integrations.ts`, so deployment does not require extra repository variables. The lazy-loaded component follows the site's light/dark theme and provides a GitHub fallback if the embed fails.
+
+Readers sign in with GitHub to comment or react. Giscus creates a post's discussion on its first comment or reaction; an empty conversation is an expected state. Comments can be moderated through the repository's Discussions tab.
+
+To connect a different repository:
 
 1. Choose a **public GitHub repository** for discussions.
 2. Enable Discussions in that repository's settings.
@@ -78,7 +82,7 @@ PUBLIC_GISCUS_CATEGORY=Announcements
 PUBLIC_GISCUS_CATEGORY_ID=actual-category-id-from-giscus
 ```
 
-These are public embed identifiers, **not access tokens**. No GitHub access token belongs in browser code. The integration uses a stable specific-term mapping and strict matching; don't change the mapping in the component after launch without migrating discussions. Live posting could not be tested without a configured repository.
+These are public embed identifiers, **not access tokens**. No GitHub access token belongs in browser code. Supply all repository and category identifiers when overriding the defaults; incomplete overrides disable the embed instead of mixing IDs from different repositories. The integration uses a stable specific-term mapping and strict matching; don't change the mapping in the component after launch without migrating discussions.
 
 ## GitHub contribution chart
 
